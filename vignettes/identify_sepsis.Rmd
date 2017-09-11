@@ -54,8 +54,7 @@ library(data.table)
 library(fasttime)
 library(devtools)
 devtools::install_github("marksendak/constellation")
-setwd("~/constellation/data/")
-labs <- fread()
+library(constellation)
 ```
 
 ## Technical References
