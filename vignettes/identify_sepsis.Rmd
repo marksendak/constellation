@@ -52,6 +52,8 @@ This function is used to identify drops in systolic blood pressure of greater th
 ```{r setup, include = FALSE}
 library(data.table)
 library(fasttime)
+library(devtools)
+devtools::install_github("marksendak/constellation")
 setwd("~/constellation/data/")
 labs <- fread()
 ```
