@@ -55,7 +55,7 @@ fastPOSIXct() from fasttime package and data.table syntax
 \section{Errors}{
 
 This function returns errors for: 
-\itemize {
+\itemize{
  \item missing arguments (only final_event has a default value)
  \item passing a window_hours value that is not numeric or negative or 0 
  \item passing join_key or time_var values that are not column names in all 
