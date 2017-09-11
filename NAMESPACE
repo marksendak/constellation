@@ -1,1 +1,5 @@
-exportPattern("^[[:alpha:]]+")
+export("constellate")
+export("constellate_criteria")
+
+import("data.table")
+importFrom("fasttime","fastPOSIXct")

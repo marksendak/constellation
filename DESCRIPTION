@@ -1,11 +1,24 @@
 Package: constellation
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Identify Events Via Time Series Logic
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Date: 2017-09-05
+Depends: R
+Imports: data.table, fasttime
+Suggests: knitr, rmarkdown
+Authors@R: person("Mark", “Sendak”, email = "mark.sendak@gmail.com",
+  role = c("aut", "cre"))
+Description: Examine any number of time series data frames to identify 
+    instances in which various criteria are met within specified time
+    frames. In clinical medicine, these types of events are often
+    called “constellations of signs and symptoms”, because a single 
+    condition depends on a series of events occurring within a certain 
+    amount of time of each other. This package was written to work with
+    any number of time series data frames and is optimized for speed 
+    to work well with data frames with millions of rows.
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/marksendak/constellation
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
