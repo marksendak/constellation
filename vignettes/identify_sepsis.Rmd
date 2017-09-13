@@ -15,10 +15,6 @@ The functions in the constellation package can be used with time series data of 
 
 Three datasets (labs, vitals, and orders) with randomly synthesized data for a cohort of 100 patients are included in the constellation package to facilitate better understanding of functions.
 
-## Why constellation?
-
-In clinical medicine, there are a subset of conditions that are defined by a sequence of related events that unfold over time. There is a phrase to describe this type of condition as a "*constellation of signs and symptoms*." The analogy to astronomy emphasizes that the condition manifests over time affecting a variety of measurements and values.
-
 ## Sepsis
 
 The constellation of signs and symptoms that motivated the development of this package was sepsis. There is ongoing debate in the medical literature about what constitutes sepsis, but our local team of clinical experts agreed to define sepsis as the occurrence of all 3 following criteria:
