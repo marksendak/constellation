@@ -9,6 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
 ## Sepsis
 
 Implementing a sepsis definition motivated development of the constellation package. There is ongoing debate in the medical literature about what constitutes sepsis, but our local team of clinical experts agreed to define sepsis as the occurrence of all 3 following criteria:
@@ -46,7 +50,7 @@ library(fasttime)
 
 Use this function to identify all instances of a drop in systolic blood pressure of greater than 40 within 6 hours.
 
-```{r bp_drop}
+```{r bp_drop, message = FALSE}
 systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
 systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
 
@@ -67,13 +71,13 @@ wbc <- labs[VARIABLE == "WBC" & (VALUE > 12 | VALUE < 4)]
 ```
 
 Next, identify which criteria are met at every measurement time
-```{r sirs_calculate}
+```{r sirs_calculate, message = FALSE}
 sirs <- constellate_criteria(temp, pulse, resp, wbc, criteria_names = c("TEMPERATURE", "PULSE", "RESPIRATORY_RATE", "WBC"), window_hours = c(6, 6, 6, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME")
 head(sirs)
 ```
 
 Sum values in the 4 columns to calculate SIRS score at every measurement time and subset to instances where SIRS >= 2
-```{r sirs_sum}
+```{r sirs_sum, message = FALSE}
 sirs[, SIRS_SCORE := TEMPERATURE + PULSE + RESPIRATORY_RATE + WBC]
 sirs <- sirs[SIRS_SCORE >= 2]
 head(sirs)
