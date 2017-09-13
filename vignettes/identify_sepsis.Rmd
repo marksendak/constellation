@@ -14,7 +14,7 @@ vignette: >
 Implementing a sepsis definition motivated development of the constellation package. There is ongoing debate in the medical literature about what constitutes sepsis, but our local team of clinical experts agreed to define sepsis as the occurrence of all 3 following criteria:
 
 1. 2 or more SIRS criteria  
-    + Temperature > 100.4 C or Temperature < 96.8 C (**6 hours**)
+    + Temperature > 100.4 F or Temperature < 96.8 F (**6 hours**)
     + Heart Rate > 90 (**6 hours**)
     + Respiration Rate > 20 (**6 hours**)
     + WBC Count > 12, WBC Count < 4 (**24 hours**)
