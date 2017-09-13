@@ -46,7 +46,7 @@ library(fasttime)
 
 Use this function to identify all instances of a drop in systolic blood pressure of greater than 40 within 6 hours.
 
-```{r bp_drop, message = FALSE}
+```{r bp_drop}
 systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
 systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
 
@@ -59,7 +59,7 @@ head(systolic_bp_drop)
 ## constellate_criteria() - identify SIRS >= 2
 
 First, break out all the SIRS component tables applying dysfunction thresholds
-```{r sirs_components, message = FALSE}
+```{r sirs_components}
 temp <- vitals[VARIABLE == "TEMPERATURE" & (VALUE > 100.4 | VALUE < 96.8)]
 pulse <- vitals[VARIABLE == "PULSE" & VALUE > 90]
 resp <- vitals[VARIABLE == "RESPIRATORY_RATE" & VALUE > 20]
@@ -67,13 +67,13 @@ wbc <- labs[VARIABLE == "WBC" & (VALUE > 12 | VALUE < 4)]
 ```
 
 Next, identify which criteria are met at every measurement time
-```{r sirs_calculate, message = FALSE}
+```{r sirs_calculate}
 sirs <- constellate_criteria(temp, pulse, resp, wbc, criteria_names = c("TEMPERATURE", "PULSE", "RESPIRATORY_RATE", "WBC"), window_hours = c(6, 6, 6, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME")
 head(sirs)
 ```
 
 Sum values in the 4 columns to calculate SIRS score at every measurement time and subset to instances where SIRS >= 2
-```{r sirs_sum, message = FALSE}
+```{r sirs_sum}
 sirs[, SIRS_SCORE := TEMPERATURE + PULSE + RESPIRATORY_RATE + WBC]
 sirs <- sirs[SIRS_SCORE >= 2]
 head(sirs)
