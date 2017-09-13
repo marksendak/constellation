@@ -1,5 +1,5 @@
 ---
-title: "Using Constellation Functions to Identify Sepsis"
+title: "Using Constellation to Identify Sepsis"
 author: "Mark Sendak"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,18 +9,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## Overview
-
-The functions in the constellation package can be used with time series data of arbitrary length to identify events that rely on multidimensional logic. These functions were originally developed to enable flexible implementation of a sepsis definition to support a machine learning project at the [Duke Institute for Health Innovation](http://www.dihi.org/). However, the functions have been abstracted for general purpose use with any time series data. Functions in the constallation package extend and provide a friendly application programming interface to rolling joins and overlap joins implemented in the [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf) package.
-
-Three datasets (labs, vitals, and orders) with randomly synthesized data for a cohort of 100 patients are included in the constellation package to facilitate better understanding of functions.
-
 ## Sepsis
 
-The constellation of signs and symptoms that motivated the development of this package was sepsis. There is ongoing debate in the medical literature about what constitutes sepsis, but our local team of clinical experts agreed to define sepsis as the occurrence of all 3 following criteria:
+Implementing a sepsis definition motivated development of the constellation package. There is ongoing debate in the medical literature about what constitutes sepsis, but our local team of clinical experts agreed to define sepsis as the occurrence of all 3 following criteria:
 
 1. 2 or more SIRS criteria  
-    + Temperature > 38.3 C or Temperature < 36 C (**6 hours**)
+    + Temperature > 100.4 C or Temperature < 96.8 C (**6 hours**)
     + Heart Rate > 90 (**6 hours**)
     + Respiration Rate > 20 (**6 hours**)
     + WBC Count > 12, WBC Count < 4 (**24 hours**)
@@ -33,74 +27,65 @@ The constellation of signs and symptoms that motivated the development of this p
     + Platelets < 100 (**24 hours**)
     + Lactate >= 2 (**24 hours**)
 
-For each criteria, there is both a threshold to signify dysfunction as well as a relevant time window to search for events. A major challenge of working with medical data is that the sampling rate varies across measurements. For example, vital signs are sampled more frequently than blood labs, so their information is carried forward for a shorter period of time than lab results. This challenge may diminish over time as more continuosly measured data is collected.
+For each criteria, there is both a threshold to signify dysfunction as well as a relevant time window to search for events. A major challenge of working with medical data is that the sampling rate varies across measurements. For example, vital signs are sampled more frequently than blood labs, so their information is carried forward for a shorter period of time than lab results.
 
-Using the above definition, there are 3 steps to identify sepsis and each step corresponds to a user-facing function in the constellation package:
+There are 3 steps to identify sepsis and each step corresponds to a constellation function:
 
 1. Identify instances of systolic blood pressure drops > 40 over 6 hours (**value_change()** function)
 2. Identify instances of SIRS >= 2 (**constellate_criteria()** function)
 3. Identify instances in which patients have SIRS >= 2, a blood culture order, and evidence of end organ damage (**constellate()** function)
 
-## value_change()
-
-This function is used to identify drops in systolic blood pressure of greater than 40 over 6 hours. This function extends the foverlaps() function in data.table.
-
-```{r setup, include = FALSE}
-library(data.table)
-library(fasttime)
-library(devtools)
+First, load constellation and fasttime
+```{r setup, message = FALSE}
 devtools::install_github("marksendak/constellation")
 library(constellation)
+library(fasttime)
 ```
+
+## value_change() - identify systolic blood pressure drops
+
+Use this function to identify all instances of a drop in systolic blood pressure of greater than 40 within 6 hours.
+
+```{r bp_drop, message = FALSE}
+systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
+systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
+
+systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
+    window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
+    value_var = "VALUE", mult = "all")
+head(systolic_bp_drop)
+```
+
+## constellate_criteria() - identify SIRS >= 2
+
+First, break out all the SIRS component tables applying dysfunction thresholds
+```{r sirs_components, message = FALSE}
+temp <- vitals[VARIABLE == "TEMPERATURE" & (VALUE > 100.4 | VALUE < 96.8)]
+pulse <- vitals[VARIABLE == "PULSE" & VALUE > 90]
+resp <- vitals[VARIABLE == "RESPIRATORY_RATE" & VALUE > 20]
+wbc <- labs[VARIABLE == "WBC" & (VALUE > 12 | VALUE < 4)]
+```
+
+Next, identify which criteria are met at every measurement time
+```{r sirs_calculate, message = FALSE}
+sirs <- constellate_criteria(temp, pulse, resp, wbc, criteria_names = c("TEMPERATURE", "PULSE", "RESPIRATORY_RATE", "WBC"), window_hours = c(6, 6, 6, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME")
+head(sirs)
+```
+
+Sum values in the 4 columns to calculate SIRS score at every measurement time and subset to instances where SIRS >= 2
+```{r sirs_sum, message = FALSE}
+sirs[, SIRS_SCORE := TEMPERATURE + PULSE + RESPIRATORY_RATE + WBC]
+sirs <- sirs[SIRS_SCORE >= 2]
+head(sirs)
+```
+
+## constellate() - identify instances where 3 sepsis criteria are met
+
+#### Compile end organ damage
+
+#### Run constellate()
+
 
 ## Technical References
 
 If you'd like to learn more about our sepsis model, please see our publications from the [International Conerence on Machine Learning](https://arxiv.org/abs/1706.04152) and [Machine Learning in Health Care](https://arxiv.org/pdf/1708.05894.pdf). 
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
