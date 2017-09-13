@@ -9,10 +9,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-```
-
 ## Sepsis
 
 Implementing a sepsis definition motivated development of the constellation package. There is ongoing debate in the medical literature about what constitutes sepsis, but our local team of clinical experts agreed to define sepsis as the occurrence of all 3 following criteria:
