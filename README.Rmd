@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf).
+Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf). Three datasets (labs, vitals, and orders) with randomly synthesized time series data for a cohort of 100 patients are included to facilitate testing of functions.
 
 There are three functions included in constellation to build complex features from time series data:
 
@@ -33,7 +33,7 @@ If you are new to constellation, the best place to start is the `vignette("const
 
 You can install constellation from github with:
 
-```{r gh-installation}
+```{r gh-installation, message = FALSE}
 devtools::install_github("marksendak/constellation")
 ```
 
@@ -41,8 +41,9 @@ This package is under development in preparation of release on CRAN. If you have
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Below are several variations of finding systolic blood pressure drops of 40 over a 6 hour period.
 
+Examine systolic blood pressure data:
 ```{r example, message = FALSE}
 library(constellation)
 library(fasttime)
@@ -50,17 +51,26 @@ library(fasttime)
 systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
 systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
 head(systolic_bp)
+```
 
+Identify the first systolic blood pressure drop per patient:
+```{r first_drop, message = FALSE}
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
     value_var = "VALUE", mult = "first")
 head(systolic_bp_drop)
+```
 
+Identify the last systolic blood pressure drop per patient:
+```{r last_drop, message = FALSE}
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
     value_var = "VALUE", mult = "last")
 head(systolic_bp_drop)
+```
 
+Identify all systolic blood pressure drops per patient:
+```{r all_drops, message = FALSE}
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
     value_var = "VALUE", mult = "all")

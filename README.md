@@ -5,7 +5,7 @@
 Overview
 --------
 
-Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf).
+Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf). Three datasets (labs, vitals, and orders) with randomly synthesized time series data for a cohort of 100 patients are included to facilitate testing of functions.
 
 There are three functions included in constellation to build complex features from time series data:
 
@@ -24,15 +24,6 @@ You can install constellation from github with:
 
 ``` r
 devtools::install_github("marksendak/constellation")
-#> Downloading GitHub repo marksendak/constellation@master
-#> from URL https://api.github.com/repos/marksendak/constellation/zipball/master
-#> Installing constellation
-#> '/Library/Frameworks/R.framework/Resources/bin/R' --no-site-file  \
-#>   --no-environ --no-save --no-restore --quiet CMD INSTALL  \
-#>   '/private/var/folders/sg/40ck6p8n0hb2qcgdkncw9b2c0000gp/T/RtmpWlVxXp/devtools1428d42097119/marksendak-constellation-6f9a390'  \
-#>   --library='/Library/Frameworks/R.framework/Versions/3.3/Resources/library'  \
-#>   --install-tests
-#> 
 ```
 
 This package is under development in preparation of release on CRAN. If you have any questions, comments, or feedback, please email <mark.sendak@gmail.com>.
@@ -40,7 +31,9 @@ This package is under development in preparation of release on CRAN. If you have
 Example
 -------
 
-This is a basic example which shows you how to solve a common problem:
+Below are several variations of finding systolic blood pressure drops of 40 over a 6 hour period.
+
+Examine systolic blood pressure data:
 
 ``` r
 library(constellation)
@@ -56,7 +49,11 @@ head(systolic_bp)
 #> 4: 108546 2010-02-25 06:05:43 102.9899 SYSTOLIC_BP
 #> 5: 108546 2010-02-25 06:48:29 122.1348 SYSTOLIC_BP
 #> 6: 108546 2010-02-25 07:14:18 119.7529 SYSTOLIC_BP
+```
 
+Identify the first systolic blood pressure drop per patient:
+
+``` r
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
     value_var = "VALUE", mult = "first")
@@ -75,7 +72,11 @@ head(systolic_bp_drop)
 #> 4:     116.66625
 #> 5:     111.55469
 #> 6:     132.99234
+```
 
+Identify the last systolic blood pressure drop per patient:
+
+``` r
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
     value_var = "VALUE", mult = "last")
@@ -94,7 +95,11 @@ head(systolic_bp_drop)
 #> 4:     118.81151
 #> 5:      81.90537
 #> 6:     138.28222
+```
 
+Identify all systolic blood pressure drops per patient:
+
+``` r
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
     value_var = "VALUE", mult = "all")
