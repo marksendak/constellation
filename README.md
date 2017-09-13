@@ -21,7 +21,6 @@ Installation
 You can install constellation from github with:
 
 ``` r
-# install.packages("devtools")
 devtools::install_github("marksendak/constellation")
 ```
 
@@ -33,7 +32,15 @@ Example
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-## basic example code
+library(constellation)
+
+systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
+class(vitals)
+#> [1] "data.table" "data.frame"
+
+#head(vitals)
+
+#systolic_bp <- vitals[]
 ```
 
 Why constellation?
