@@ -1,5 +1,6 @@
 export("constellate")
 export("constellate_criteria")
+export("value_change")
 
 import("data.table")
 import("fasttime")
