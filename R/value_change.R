@@ -62,6 +62,8 @@
 #'  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
 #'  value_var = "SYSTOLIC", mult = "all"))
 #' }
+#' 
+#' @export
 
 value_change <- function(data, value, direction = c("up", "down", "all"), 
   window_hours, join_key, time_var, value_var, mult = c("first", "last", 

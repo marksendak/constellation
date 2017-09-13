@@ -31,7 +31,7 @@ If you are new to constellation, the best place to start is the `vignette("const
 
 You can install constellation from github with:
 
-```{r gh-installation, eval = FALSE}
+```{r gh-installation}
 devtools::install_github("marksendak/constellation")
 ```
 
