@@ -2,11 +2,12 @@
 title: "Using Constellation to Identify Sepsis"
 author: "Mark Sendak"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Identify Sepsis}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 ## Sepsis
