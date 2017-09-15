@@ -60,7 +60,7 @@ Use this function to identify all instances of a drop in systolic blood pressure
 systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
 
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
-    window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
+    window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME",
     value_var = "VALUE", mult = "all")
 head(systolic_bp_drop)
 ```
@@ -77,7 +77,10 @@ wbc <- labs[VARIABLE == "WBC" & (VALUE > 12 | VALUE < 4)]
 
 Next, identify which criteria are met at every measurement time
 ```{r sirs_calculate, message = FALSE}
-sirs <- constellate_criteria(temp, pulse, resp, wbc, criteria_names = c("TEMPERATURE", "PULSE", "RESPIRATORY_RATE", "WBC"), window_hours = c(6, 6, 6, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME")
+sirs <- constellate_criteria(temp, pulse, resp, wbc,
+        criteria_names = c("TEMPERATURE", "PULSE", "RESPIRATORY_RATE", "WBC"),
+        window_hours = c(6, 6, 6, 24), join_key = "PAT_ID",
+        time_var = "RECORDED_TIME")
 head(sirs)
 ```
 
@@ -123,15 +126,21 @@ setnames(orders, "ORDER_TIME", "RECORDED_TIME")
 #### Run constellate()
 ```{r sepsis_def, message = FALSE}
 ## Find all sepsis events
-sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS", mult = "all")
+sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
+    mult = "all")
 head(sepsis)
 
 ## Find first sepsis events
-sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS", mult = "first")
+sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
+    mult = "first")
 head(sepsis)
 
 ## Find last sepsis events
-sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24), join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS", mult = "last")
+sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
+    mult = "last")
 head(sepsis)
 ```
 
