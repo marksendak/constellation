@@ -39,7 +39,7 @@ There are 3 steps to identify sepsis and each step corresponds to a constellatio
 ## View Vignette with Output
 
 The .Rmd version of the vignette will not show code output. If you'd like to see code output, please do the following:
-```{r vignette_view, message = FALSE}
+```{r vignette_view, message = FALSE, eval = FALSE}
 devtools::install_github("marksendak/constellation", build_vignettes = TRUE)
 library(constellation)
 vignette("identify_sepsis", package = "constellation")
