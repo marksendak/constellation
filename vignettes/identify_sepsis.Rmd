@@ -36,6 +36,17 @@ There are 3 steps to identify sepsis and each step corresponds to a constellatio
 2. Identify instances of SIRS >= 2 (**constellate_criteria()** function)
 3. Identify instances in which patients have SIRS >= 2, a blood culture order, and evidence of end organ damage (**constellate()** function)
 
+## View Vignette with Output
+
+The .Rmd version of the vignette will not show code output. If you'd like to see code output, please do the following:
+```{r vignette_view, message = FALSE}
+devtools::install_github("marksendak/constellation", build_vignettes = TRUE)
+library(constellation)
+vignette("identify_sepsis", package = "constellation")
+```
+
+## Environment and Data Prep
+
 First, load constellation and fasttime
 ```{r setup, message = FALSE}
 devtools::install_github("marksendak/constellation")
@@ -119,24 +130,34 @@ end_organ <- rbind(end_organ, systolic_bp, systolic_bp_drop)
 ```
 
 #### Normalize blood culture orders
+
+Normalize blood culture order data to feed into constellate() function. The timestamp variable in all time series data frames passed to constellate() must be identical.
 ```{r bc_orders, message = FALSE}
 setnames(orders, "ORDER_TIME", "RECORDED_TIME")
 ```
 
 #### Run constellate()
-```{r sepsis_def, message = FALSE}
+
+Calculate every instance in which all 3 criteria are met for every patient.
+```{r sepsis_def_all, message = FALSE}
 ## Find all sepsis events
 sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
     mult = "all")
 head(sepsis)
+```
 
+Calculate the first instant in which all 3 criteria are met for every patient.
+```{r sepsis_def_first, message = FALSE}
 ## Find first sepsis events
 sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
     mult = "first")
 head(sepsis)
+```
 
+Calculate the last instant in which all 3 criteria are met for every patient.
+```{r sepsis_def_last, message = FALSE}
 ## Find last sepsis events
 sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
