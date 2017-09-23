@@ -17,7 +17,8 @@
 #'  'time_var', and 'value_var'
 #' @param value A numeric value specifying the magnitude of change to identify
 #' @param direction A string value specifying whether to identify changes in 
-#'  the value up (an increase), down (a decrease), or all (both)
+#'  the value up (an increase), down (a decrease), or all (both). The default
+#'  value is all.
 #' @param window_hours A numeric value specifying the number of hours to search
 #'  for the value change
 #' @param join_key A string name of the column to join the time series data
@@ -27,7 +28,7 @@
 #' @param value_var A string name of the value variable column in the time
 #'  series data frame
 #' @param mult A string specifying whether to return the first, last, or all
-#'  instance(s) of the value change
+#'  instance(s) of the value change with a default value of all
 #' 
 #' @return A data.frame, data.table with time stamps of value changes over time
 #'  along with values and time stamps for prior measurements
@@ -65,9 +66,9 @@
 #' 
 #' @export
 
-value_change <- function(data, value, direction = c("up", "down", "all"), 
-  window_hours, join_key, time_var, value_var, mult = c("first", "last", 
-    "all")) {
+value_change <- function(data, value, direction = c("all", "up", "down"), 
+  window_hours, join_key, time_var, value_var, mult = c("all", "first",
+  "last")) {
   
   ########## Error handling ---------------------------------------------------
   # Missing arguments
@@ -78,15 +79,9 @@ value_change <- function(data, value, direction = c("up", "down", "all"),
   if (missing(time_var)) stop("Need to specify time variable")
   if (missing(value_var)) stop("Need to specify value variable")
 
-  # Direction not from set of options
-  if ((direction %in% c("up","down","all")) == FALSE) {
-    stop("Direction argument must be 'up', 'down', or 'all'")
-  }
-
-  # Mult argument not from set of options
-  if ((mult %in% c("first","last","all")) == FALSE) {
-    stop("Mult argument must be 'first', 'last', or 'all'")
-  }
+  # Direction and mult not from set of options
+  direction <- match.arg(direction)
+  mult <- match.arg(mult)
 
   # Confirm argument classes
   if (!is.data.frame(data)) stop("'data' must be a data.frame")

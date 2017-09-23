@@ -21,7 +21,7 @@
 #' @param event_name A string name for events across the time series data
 #'  frames
 #' @param mult A string specifying whether to return the first, last, or all
-#'  instance(s) 
+#'  instance(s) with a default value of all
 #' 
 #' @return A data.frame, data.table with time stamps of qualifying events.
 #' 
@@ -57,7 +57,7 @@
 #' @export
 
 constellate <- function(..., window_hours, join_key, time_var, event_name, 
-  mult = c("first", "last", "all")) {
+  mult = c("all", "first", "last")) {
     
   # Build list
   criteria_list <- list(...)
@@ -73,9 +73,7 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   if (missing(event_name)) stop("Need to specify event name")
   
   # Mult argument not from set of options
-  if ((mult %in% c("first","last","all")) == FALSE) {
-    stop("Mult argument must be 'first', 'last', or 'all'")
-  }
+  mult <- match.arg(mult)
   
   # Argument class
   for (i in seq_len(length(criteria_list))) {
