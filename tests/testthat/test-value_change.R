@@ -47,8 +47,8 @@ test_that("error messages function", {
     expect_error(value_change(sbp_testpt, value = 40, direction = "all", window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", mult = "all"), "Need to specify value variable")
 
     ## Args don't match
-    expect_error(value_change(sbp_testpt, value = 40, direction = "foo", window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", value_var = "VALUE", mult = "all"), "'arg' should be one of “all”, “up”, “down”")
-    expect_error(value_change(sbp_testpt, value = 40, direction = "all", window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", value_var = "VALUE", mult = "foo"), "'arg' should be one of “all”, “first”, “last”")
+    expect_error(value_change(sbp_testpt, value = 40, direction = "foo", window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", value_var = "VALUE", mult = "all"), "'arg' should be one of "all", "up", "down"")
+    expect_error(value_change(sbp_testpt, value = 40, direction = "all", window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", value_var = "VALUE", mult = "foo"), "'arg' should be one of "all", "first", "last"")
 
     ## Wrong class
     expect_error(value_change("foo", value = 40, direction = "all", window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", value_var = "VALUE", mult = "all"), "'data' must be a data.frame")
