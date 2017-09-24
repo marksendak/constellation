@@ -3,7 +3,7 @@
 constellation
 =============
 
-[![Build Status](https://travis-ci.org/marksendak/constellation.svg?branch=master)](https://travis-ci.org/marksendak/constellation) [![Windows build status](https://ci.appveyor.com/api/projects/status/github/marksendak/constellation?branch=master&svg=true)](https://ci.appveyor.com/project/marksendak/constellation)
+[![Build Status](https://travis-ci.org/marksendak/constellation.svg?branch=master)](https://travis-ci.org/marksendak/constellation) [![Windows build status](https://ci.appveyor.com/api/projects/status/github/marksendak/constellation?svg=true)](https://ci.appveyor.com/project/marksendak/constellation)
 
 Overview
 --------
