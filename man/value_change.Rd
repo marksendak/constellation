@@ -4,8 +4,8 @@
 \alias{value_change}
 \title{Identify changes in a value over time}
 \usage{
-value_change(data, value, direction = c("up", "down", "all"), window_hours,
-  join_key, time_var, value_var, mult = c("first", "last", "all"))
+value_change(data, value, direction = c("all", "up", "down"), window_hours,
+  join_key, time_var, value_var, mult = c("all", "first", "last"))
 }
 \arguments{
 \item{data}{A time series data frame that includes the columns 'join_key',
@@ -14,7 +14,8 @@ value_change(data, value, direction = c("up", "down", "all"), window_hours,
 \item{value}{A numeric value specifying the magnitude of change to identify}
 
 \item{direction}{A string value specifying whether to identify changes in 
-the value up (an increase), down (a decrease), or all (both)}
+the value up (an increase), down (a decrease), or all (both). The default
+value is all.}
 
 \item{window_hours}{A numeric value specifying the number of hours to search
 for the value change}
@@ -29,7 +30,7 @@ data frame}
 series data frame}
 
 \item{mult}{A string specifying whether to return the first, last, or all
-instance(s) of the value change}
+instance(s) of the value change with a default value of all}
 }
 \value{
 A data.frame, data.table with time stamps of value changes over time
@@ -83,4 +84,5 @@ value_change(systolic_bp, value = 40, direction = "all", window_hours = 6,
  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  value_var = "SYSTOLIC", mult = "all"))
 }
+
 }

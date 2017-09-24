@@ -11,12 +11,12 @@ constellate_criteria(..., criteria_names, window_hours, join_key, time_var,
 \item{...}{An arbitrary number of time series data frames that each include
 the columns 'join_key' and 'time_var'}
 
-\item{criteria_names}{A vector of strings specifying the name of each 
-event. The order of strings in the vector should align with the order of 
+\item{criteria_names}{A vector of strings specifying the name of each
+event. The order of strings in the vector should align with the order of
 data frames passed in '...'.}
 
-\item{window_hours}{A single numeric or vector of numerics specifying the 
-number of hours to search for each event. The order of numerics in the 
+\item{window_hours}{A single numeric or vector of numerics specifying the
+number of hours to search for each event. The order of numerics in the
 vector should align with the order of data frames passed in '...'.}
 
 \item{join_key}{A string name of the column to join all time series data
@@ -25,26 +25,26 @@ frames}
 \item{time_var}{A string name of the time stamp column in all time series
 data frames}
 
-\item{final_event}{A boolean specifying where or not to build an indicator 
+\item{final_event}{A boolean specifying where or not to build an indicator
 variable for the final event in the sequence}
 }
 \value{
 A data.frame, data.table with indicator variables for each event
 }
 \description{
-A function that reads in multiple time series data frames and builds 
+A function that reads in multiple time series data frames and builds
  indicator variables for each event at every timestamp.
-The user passes an arbitrary number of time series data frames and 
- specifies a name and number of hours to search for each event. The user 
- must also specify a variable to use to join the tables, and the time stamp 
- variable. Finally, the user can select whether or not to build a final 
+The user passes an arbitrary number of time series data frames and
+ specifies a name and number of hours to search for each event. The user
+ must also specify a variable to use to join the tables, and the time stamp
+ variable. Finally, the user can select whether or not to build a final
  indicator variable that shows the final event in the sequency.
-This function extends the constellate function to address a different set 
- of questions, including: 1) at a specific timestamp, which event do and do  
- not occur? 2) which final event triggers the combination of events that 
- I'm interested in? This function can be used to calculate risk scores 
- at any measurement timestamp by building a new variable after the function 
- runs and returns the new data frame. The risk score can add up the 
+This function extends the constellate function to address a different set
+ of questions, including: 1) at a specific timestamp, which event do and do
+ not occur? 2) which final event triggers the combination of events that
+ I'm interested in? This function can be used to calculate risk scores
+ at any measurement timestamp by building a new variable after the function
+ runs and returns the new data frame. The risk score can add up the
  crieteria or can be a linear combination of criteria.
 }
 \section{Imported functions}{
@@ -54,30 +54,30 @@ fastPOSIXct() from fasttime package and data.table syntax
 
 \section{Errors}{
 
-This function returns errors for: 
+This function returns errors for:
 \itemize{
  \item missing arguments (only final_event has a default value)
- \item passing a window_hours value that is not numeric or negative or 0 
- \item passing join_key or time_var values that are not column names in all 
+ \item passing a window_hours value that is not numeric or negative or 0
+ \item passing join_key or time_var values that are not column names in all
    time series data frames
- \item passing an invalid number of criteria_names (must be equal to number 
+ \item passing an invalid number of criteria_names (must be equal to number
    of event data frames)
- \item passing an invalid number of window_hours values (1 or the number of 
+ \item passing an invalid number of window_hours values (1 or the number of
    event data frames).
 }
 }
 
 \examples{
 \dontrun{
-constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE", 
- "PULSE", "RESPIRATORY_RATE"), window_hours = 6, join_key = "ENCOUNTER_ID", 
+constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
+ "PULSE", "RESPIRATORY_RATE"), window_hours = 6, join_key = "ENCOUNTER_ID",
  time_var = "RECORDED_TIME") # Pass single window_hours
-constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE", 
- "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key = 
- "ENCOUNTER_ID", time_var = "RECORDED_TIME") # Pass vector for window_hours 
-constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE", 
- "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key = 
- "ENCOUNTER_ID", time_var = "RECORDED_TIME", final_event = TRUE) # Add 
+constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
+ "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
+ "ENCOUNTER_ID", time_var = "RECORDED_TIME") # Pass vector for window_hours
+constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
+ "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
+ "ENCOUNTER_ID", time_var = "RECORDED_TIME", final_event = TRUE) # Add
  final event variable
 }
 

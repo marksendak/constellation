@@ -4,8 +4,8 @@
 \alias{constellate}
 \title{Identify when a constellation of events occur}
 \usage{
-constellate(..., window_hours, join_key, time_var, event_name,
-  mult = c("first", "last", "all"))
+constellate(..., window_hours, join_key, time_var, event_name, mult = c("all",
+  "first", "last"))
 }
 \arguments{
 \item{...}{An arbitrary number of time series data frames that each include
@@ -25,7 +25,7 @@ data frames}
 frames}
 
 \item{mult}{A string specifying whether to return the first, last, or all
-instance(s)}
+instance(s) with a default value of all}
 }
 \value{
 A data.frame, data.table with time stamps of qualifying events.
