@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+# constellation
 [![Build Status](https://travis-ci.org/marksendak/constellation.svg?branch=master)](https://travis-ci.org/marksendak/constellation)
 
 ## Overview
