@@ -105,14 +105,14 @@ test_that("error messages function", {
     ## Missing column
     expect_error(value_change(sbp_testpt, value = 40, direction = "all", 
       window_hours = 6, join_key = "foo", time_var = "RECORDED_TIME", 
-      value_var = "VALUE", mult = "all"), "'join_key' is not a column name in 
-      data")
+      value_var = "VALUE", mult = "all"),
+      "'join_key' is not a column name in data")
     expect_error(value_change(sbp_testpt, value = 40, direction = "all", 
       window_hours = 6, join_key = "PAT_ID", time_var = "foo", 
-      value_var = "VALUE", mult = "all"), "'time_var' is not a column name in 
-      data")
+      value_var = "VALUE", mult = "all"),
+      "'time_var' is not a column name in data")
     expect_error(value_change(sbp_testpt, value = 40, direction = "all", 
       window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME", 
-      value_var = "foo", mult = "all"), "'value_var' is not a column name in 
-      data")
+      value_var = "foo", mult = "all"),
+      "'value_var' is not a column name in data")
 })
