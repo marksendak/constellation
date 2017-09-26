@@ -64,8 +64,8 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
     
   ########## Error handling --------------------------------------------------
   # Missing arguments
-  if (length(criteria_list) < 1) {
-      stop("Need to pass at least one time series data frame")
+  if (length(criteria_list) < 2) {
+      stop("Need to pass at least two time series data frames")
   }
   if (missing(window_hours)) stop("Need to specify window hours")
   if (missing(join_key)) stop("Need to specify join key")

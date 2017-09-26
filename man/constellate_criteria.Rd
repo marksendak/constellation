@@ -32,13 +32,17 @@ variable for the final event in the sequence}
 A data.frame, data.table with indicator variables for each event
 }
 \description{
-A function that reads in multiple time series data frames and builds
- indicator variables for each event at every timestamp.
+A function that reads in multiple time series data frames for various events
+ and builds indicator variables for each event that occurs within a
+ specified number of hours within every timestamp.
+}
+\details{
 The user passes an arbitrary number of time series data frames and
  specifies a name and number of hours to search for each event. The user
  must also specify a variable to use to join the tables, and the time stamp
  variable. Finally, the user can select whether or not to build a final
- indicator variable that shows the final event in the sequency.
+ indicator variable that shows the final event in the sequence.
+
 This function extends the constellate function to address a different set
  of questions, including: 1) at a specific timestamp, which event do and do
  not occur? 2) which final event triggers the combination of events that

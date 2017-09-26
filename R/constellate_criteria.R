@@ -1,12 +1,15 @@
 #' Flags events that occur at every time measurement
 #'
-#' A function that reads in multiple time series data frames and builds
-#'  indicator variables for each event at every timestamp.
+#' A function that reads in multiple time series data frames for various events
+#'  and builds indicator variables for each event that occurs within a
+#'  specified number of hours within every timestamp.
+#' 
 #' The user passes an arbitrary number of time series data frames and
 #'  specifies a name and number of hours to search for each event. The user
 #'  must also specify a variable to use to join the tables, and the time stamp
 #'  variable. Finally, the user can select whether or not to build a final
-#'  indicator variable that shows the final event in the sequency.
+#'  indicator variable that shows the final event in the sequence.
+#' 
 #' This function extends the constellate function to address a different set
 #'  of questions, including: 1) at a specific timestamp, which event do and do
 #'  not occur? 2) which final event triggers the combination of events that
@@ -30,7 +33,9 @@
 #' @param final_event A boolean specifying where or not to build an indicator
 #'  variable for the final event in the sequence
 #'
-#' @return A data.frame, data.table with indicator variables for each event
+#' @return A data.frame, data.table with indicator variables for each event.
+#'  The total number of rows is the unique number of time stamps for 
+#'  all combined measurements.
 #'
 #' @section Imported functions:
 #' fastPOSIXct() from fasttime package and data.table syntax
@@ -71,10 +76,10 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
 
   ############ Error handling -------------------------------------------------
   # Missing arguments
-  if (length(criteria_list) < 1) {
-    stop("Need to pass at least one time series data frame")
+  if (length(criteria_list) < 2) {
+    stop("Need to pass at least two time series data frames")
   }
-  if (missing(window_hours)) stop("Need to specify window hours")
+  if (missing(window_hours)) stop("Need to specify window_hours")
   if (missing(join_key)) stop("Need to specify join key")
   if (missing(time_var)) stop("Need to specify time variable")
   if (missing(criteria_names)) stop("Need to provide criteria names")
@@ -104,15 +109,15 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
 
   # Number of names provided matches number of data frames passed
   if (length(criteria_list) != length(criteria_names)) {
-    stop("Need to pass a name for each criteria data frame. The number of
-      data frames does not equal the number of names.")
+    stop(paste0("Need to pass a name for each criteria data frame. The number",
+      " of data frames does not equal the number of names."))
   }
 
   # Number of hour windows matches number of data frames passed
   if (length(criteria_list) != length(window_hours) &
       length(window_hours) != 1) {
-    stop("Need to pass a single window hour length for all criteria data
-      frames or a window hour length for each criteria data frame.")
+    stop(paste0("Need to pass a single window hour length for all criteria",
+      " data frames or a window hour length for each criteria data frame."))
   }
 
   ############ Prep data for joins --------------------------------------------
