@@ -104,8 +104,8 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   # Number of hour windows is 1 or matches number of data frames passed
   if (length(criteria_list) != length(window_hours) & 
     length(window_hours) != 1) {
-    stop("Need to pass a single window hour length for all criteria data 
-        frames or a window hour length for each criteria data frame.")
+    stop(paste0("Need to pass a single window hour length for all criteria",
+      " data frames or a window hour length for each criteria data frame."))
   }
     
   ########### Prep data for joins ---------------------------------------------
@@ -126,7 +126,8 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
     # Set keys
     setkeyv(criteria_list[[i]], c(join_key, time_var))
   }
-    
+  
+  ########### Define parameters -----------------------------------------------
   # Set time windows
   join_window <- 60 * 60 * window_hours
   
@@ -138,7 +139,8 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   for (i in seq_len(length(criteria_list))) {
   
     for (j in setdiff(seq_len(length(criteria_list)), i)) {
-      # Perform rolling join with either same window for all or drawing in each window hour separately
+      # Perform rolling join with either same window for all or drawing in each
+        # window hour separately
       if (length(window_hours) == 1) {
         event_subset <- criteria_list[[j]][criteria_list[[i]], 
           roll = join_window]

@@ -138,6 +138,7 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
     setkeyv(criteria_list[[i]], c(join_key, time_var))
   }
 
+  ########### Define parameters -----------------------------------------------
   # Set time windows
   join_window <- 60 * 60 * window_hours
 

@@ -173,7 +173,7 @@ test_that("error messages function", {
     "'time_var' is not a column name in all time series data frames"
   )
 
-  ## Same number of criteria names and data frames
+  ## Same number of criteria names and window hours as data frames
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
       criteria_names = c("PLATELETS"), window_hours = 2, join_key = "PAT_ID",

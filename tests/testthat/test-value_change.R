@@ -6,7 +6,7 @@ sbp_testpt <- vitals[VARIABLE == "SYSTOLIC_BP" & PAT_ID == "108546"]
 sbp_testpt[, VALUE := round(VALUE, digits = 4)]
 
 ## Tests
-test_that("value changes produce expected values for test patient", {
+test_that("value change produces expected values for test patient", {
   ####### First drop
   ## First drop
   first_drop <- data.table(PAT_ID = 108546, PRIOR_RECORDED_TIME = 
