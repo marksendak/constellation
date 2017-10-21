@@ -185,6 +185,3 @@ test_that("error messages function", {
       " frames or a window hour length for each criteria data frame.")
   )
 })
-
-constellate(window_hours = 2, join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST", mult = "all")
-constellate(crea_testpt, plts_testpt, window_hours = 2, join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST", mult = "all")
