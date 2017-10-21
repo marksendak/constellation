@@ -5,8 +5,6 @@ context("Constellate")
 crea_testpt <- labs[VARIABLE == "CREATININE" & PAT_ID == "108546"]
 plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 
-head(constellate(crea_testpt, plts_testpt, window_hours = 1, join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST", mult = "all"), n = 3)
-
 ## Tests
 test_that("constellate produces expected values for test patient", {
   ####### all events
@@ -140,7 +138,8 @@ test_that("error messages function", {
   
   ## Appropriate classes and values
   expect_error(
-    constellate("foo", plts_testpt, window_hours = 2, join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST", mult = "all"),
+    constellate("foo", plts_testpt, window_hours = 2, join_key = "PAT_ID",
+      time_var = "RECORDED_TIME", event_name = "TEST", mult = "all"),
     "Need to pass only data frames in first argument"
   )
   expect_error(
