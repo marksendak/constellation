@@ -29,7 +29,9 @@ data frames}
 variable for the final event in the sequence}
 }
 \value{
-A data.frame, data.table with indicator variables for each event
+A data.frame, data.table with indicator variables for each event.
+ The total number of rows is the unique number of time stamps for 
+ all combined measurements.
 }
 \description{
 A function that reads in multiple time series data frames for various events

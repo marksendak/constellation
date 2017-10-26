@@ -173,7 +173,7 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
 
     # If final event = TRUE, then add column for final event
     if (isTRUE(final_event)) {
-      event_subset[, FINAL_EVENT := criteria_names[i]]
+      set(event_subset, j = "FINAL_EVENT", value = criteria_names[i])
     }
 
     # Append file to event table

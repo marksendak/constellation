@@ -118,9 +118,9 @@ value_change <- function(data, value, direction = c("all", "up", "down"),
   setkeyv(data, c(join_key, time_var))
   
   # Subset to possible encounters that show necessary variation
-  event_subset <- data[, .(VALUE_CHANGE = max(get(value_var)) - 
-    min(get(value_var))), by = join_key][VALUE_CHANGE >= value]
-  event_subset <- event_subset[[join_key]]
+  VALUE_RANGE = NULL
+  event_subset <- data[, .(VALUE_RANGE = max(get(value_var)) -
+    min(get(value_var))), by = join_key][VALUE_RANGE >= value][[join_key]]
   data <- data[get(join_key) %in% event_subset]
 
   # Make copy for join
