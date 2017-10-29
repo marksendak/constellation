@@ -12,13 +12,12 @@ Authors@R: person("Mark", "Sendak", email = "mark.sendak@gmail.com",
 Description: Examine any number of time series data frames to identify 
     instances in which various criteria are met within specified time
     frames. In clinical medicine, these types of events are often
-    called “constellations of signs and symptoms”, because a single 
+    called "constellations of signs and symptoms", because a single 
     condition depends on a series of events occurring within a certain 
     amount of time of each other. This package was written to work with
     any number of time series data frames and is optimized for speed 
     to work well with data frames with millions of rows.
 License: GPL (>= 2)
-Encoding: UTF-8
 LazyData: true
 URL: https://github.com/marksendak/constellation
 RoxygenNote: 6.0.1
