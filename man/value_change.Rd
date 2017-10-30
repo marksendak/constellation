@@ -70,21 +70,24 @@ This function returns errors for:
 }
 
 \examples{
+library(data.table)
+systolic_bp <- as.data.table(vitals[VARIABLE == "SYSTOLIC_BP"])
+
 # Identify all instances of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
- value_var = "SYSTOLIC", mult = "all"))
+ join_key = "PAT_ID", time_var = "RECORDED_TIME",
+ value_var = "VALUE", mult = "all")
 # Identify first instance of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
- value_var = "SYSTOLIC", mult = "first"))
+ join_key = "PAT_ID", time_var = "RECORDED_TIME",
+ value_var = "VALUE", mult = "first")
 # Identify last instance of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
- value_var = "SYSTOLIC", mult = "last"))
+ join_key = "PAT_ID", time_var = "RECORDED_TIME",
+ value_var = "VALUE", mult = "last")
 # Identify all instances of drops and increases of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "all", window_hours = 6,
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
- value_var = "SYSTOLIC", mult = "all"))
+ join_key = "PAT_ID", time_var = "RECORDED_TIME",
+ value_var = "VALUE", mult = "all")
 
 }

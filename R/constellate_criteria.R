@@ -54,18 +54,23 @@
 #' }
 #'
 #' @examples
+#' library(data.table)
+#' temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
+#' pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
+#' resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+#'
 #' # Pass single window_hours
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
-#'  "PULSE", "RESPIRATORY_RATE"), window_hours = 6, join_key = "ENCOUNTER_ID",
+#'  "PULSE", "RESPIRATORY_RATE"), window_hours = 6, join_key = "PAT_ID",
 #'  time_var = "RECORDED_TIME")
 #' # Pass vector for window_hours
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
-#'  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
-#'  "ENCOUNTER_ID", time_var = "RECORDED_TIME")
+#'  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key = "PAT_ID",
+#'  time_var = "RECORDED_TIME")
 #' # Add final event variable
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
 #'  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
-#'  "ENCOUNTER_ID", time_var = "RECORDED_TIME", final_event = TRUE)
+#'  "PAT_ID", time_var = "RECORDED_TIME", final_event = TRUE)
 #'
 #' @export
 

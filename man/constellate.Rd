@@ -62,19 +62,25 @@ This function returns errors for:
 }
 
 \examples{
+library(data.table)
+temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
+pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
+resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+wbc <- as.data.table(labs[VARIABLE == "WBC"])
+
 # Pass single time window for all time series data frames
 # Subset first event
-constellate(temp, pulse, resp, windows_hours = 6, join_key = "ENCOUNTER_ID",
+constellate(temp, pulse, resp, window_hours = 6, join_key = "PAT_ID",
  time_var = "RECORDED_TIME", event_name = "sirs_vitals", mult = "first")
 # Pass different time window for each time series data frame
 # Subset first event
-constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24),
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
+constellate(temp, pulse, resp, wbc, window_hours = c(6,6,6,24),
+ join_key = "PAT_ID", time_var = "RECORDED_TIME",
  event_name = "SEPSIS", mult = "first")
 # Pass different time window for each time series data frame
 # Identify all events
-constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24),
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
+constellate(temp, pulse, resp, wbc, window_hours = c(6,6,6,24),
+ join_key = "PAT_ID", time_var = "RECORDED_TIME",
  event_name = "SEPSIS", mult = "all")
 
 }
