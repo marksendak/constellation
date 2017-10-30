@@ -1,6 +1,6 @@
 Package: constellation
 Type: Package
-Title: Identify Events Via Time Series Logic
+Title: Identify Event Sequences Using Time Series Joins
 Version: 0.0.1
 Date: 2017-09-05
 Depends: R (>= 3.0.0)
