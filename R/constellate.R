@@ -1,5 +1,5 @@
 #' Identify when a constellation of events occur
-#' 
+#'
 #' A function that reads in multiple time series data frames and calculates
 #'  instances when a constellation of events occur.
 #' The user must specify the number of hours over which each event must take
@@ -8,11 +8,11 @@
 #'  instances that events occur, or only the first or last instance. This
 #'  function can ingest an arbitrary number of data frames with longitudinal
 #'  time series data.
-#' 
+#'
 #' @param ... An arbitrary number of time series data frames that each include
 #'  the columns 'join_key' and 'time_var'
-#' @param window_hours A single numeric or vector of numerics specifying the 
-#'  number of hours to search for each event. The order of numerics in the 
+#' @param window_hours A single numeric or vector of numerics specifying the
+#'  number of hours to search for each event. The order of numerics in the
 #'  vector should align with the order of data frames passed in '...'.
 #' @param join_key A string name of the column to join all time series data
 #'  frames
@@ -22,46 +22,50 @@
 #'  frames
 #' @param mult A string specifying whether to return the first, last, or all
 #'  instance(s) with a default value of all
-#' 
+#'
 #' @return A data.frame, data.table with time stamps of qualifying events.
-#' 
+#'
 #' @section Imported functions:
 #' fastPOSIXct() from fasttime package and data.table syntax
-#' 
+#'
 #' @section Errors:
 #' This function returns errors for:
 #' \itemize{
 #'  \item missing arguments (no arguments have defaults)
 #'  \item passing an invalid mult value
-#'  \item passing arguments with invalid classes (window_hours must be numeric 
+#'  \item passing arguments with invalid classes (window_hours must be numeric
 #'    and event_name must be a string)
 #'  \item passing a window_hours value that is negative or 0
-#'  \item passing join_key or time_var values that are not column names in all 
+#'  \item passing join_key or time_var values that are not column names in all
 #'    time series data frames
-#'  \item passing an invalid number of window_hours values (1 or the number of 
+#'  \item passing an invalid number of window_hours values (1 or the number of
 #'  event data frames).
-#' } 
-#' 
+#' }
+#'
 #' @examples
-#' \dontrun{
+#' # Pass single time window for all time series data frames
+#' # Subset first event
 #' constellate(temp, pulse, resp, windows_hours = 6, join_key = "ENCOUNTER_ID",
 #'  time_var = "RECORDED_TIME", event_name = "sirs_vitals", mult = "first")
-#' constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24), 
-#'  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME", 
+#' # Pass different time window for each time series data frame
+#' # Subset first event
+#' constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24),
+#'  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
 #'  event_name = "SEPSIS", mult = "first")
-#' constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24), 
-#'  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME", 
+#' # Pass different time window for each time series data frame
+#' # Identify all events
+#' constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24),
+#'  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
 #'  event_name = "SEPSIS", mult = "all")
-#' }
-#' 
+#'
 #' @export
 
-constellate <- function(..., window_hours, join_key, time_var, event_name, 
+constellate <- function(..., window_hours, join_key, time_var, event_name,
   mult = c("all", "first", "last")) {
-    
+
   # Build list
   criteria_list <- list(...)
-    
+
   ########## Error handling --------------------------------------------------
   # Missing arguments
   if (length(criteria_list) < 2) {
@@ -71,10 +75,10 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   if (missing(join_key)) stop("Need to specify join key")
   if (missing(time_var)) stop("Need to specify time variable")
   if (missing(event_name)) stop("Need to specify event name")
-  
+
   # Mult argument not from set of options
   mult <- match.arg(mult)
-  
+
   # Argument class
   for (i in seq_len(length(criteria_list))) {
     if (!is.data.frame(criteria_list[[i]])) {
@@ -90,7 +94,7 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
     if (!is.numeric(i)) stop(" All window_hours must be numeric")
     if (i <= 0) stop("All window_hours must be greater than 0")
   }
-  
+
   # Ensure join_key and time_var are variable names in all passed data frames
   for (i in seq_len(length(criteria_list))) {
     if (sum(grepl(join_key, names(criteria_list[[i]]))) == 0) {
@@ -102,87 +106,87 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   }
 
   # Number of hour windows is 1 or matches number of data frames passed
-  if (length(criteria_list) != length(window_hours) & 
+  if (length(criteria_list) != length(window_hours) &
     length(window_hours) != 1) {
     stop(paste0("Need to pass a single window hour length for all criteria",
       " data frames or a window hour length for each criteria data frame."))
   }
-    
+
   ########### Prep data for joins ---------------------------------------------
   for (i in seq_len(length(criteria_list))) {
     # Subset data frames
     criteria_list[[i]] <- data.table(
         criteria_list[[i]][, c(join_key, time_var), with = FALSE]
       )
-    
+
     # Ensure class of time_var
-    set(criteria_list[[i]], j = time_var, 
+    set(criteria_list[[i]], j = time_var,
       value = fastPOSIXct(criteria_list[[i]][[time_var]], tz = "GMT"))
-  
+
     # Create criteria variable
-    criteria_list[[i]][, c(paste0("CRITERIA", "_", i)) := 
+    criteria_list[[i]][, c(paste0("CRITERIA", "_", i)) :=
       paste0("CRITERIA", "_", i)]
-    
+
     # Set keys
     setkeyv(criteria_list[[i]], c(join_key, time_var))
   }
-  
+
   ########### Define parameters -----------------------------------------------
   # Set time windows
   join_window <- 60 * 60 * window_hours
-  
+
   # Build empty data set to store events
   event_df <- data.table(NULL)
-  
+
   ########### Rolling joins ---------------------------------------------------
   #### Consider each criteria as a final event
   for (i in seq_len(length(criteria_list))) {
-  
+
     for (j in setdiff(seq_len(length(criteria_list)), i)) {
       # Perform rolling join with either same window for all or drawing in each
         # window hour separately
       if (length(window_hours) == 1) {
-        event_subset <- criteria_list[[j]][criteria_list[[i]], 
+        event_subset <- criteria_list[[j]][criteria_list[[i]],
           roll = join_window]
       } else {
-        event_subset <- criteria_list[[j]][criteria_list[[i]], 
+        event_subset <- criteria_list[[j]][criteria_list[[i]],
           roll = join_window[j]]
       }
-      
+
       # Update table to join
       criteria_list[[i]] <- event_subset
     }
-      
+
     # Eliminate added columns from raw event data
-    criteria_list[[i]] <- criteria_list[[i]][, c(join_key, time_var, 
+    criteria_list[[i]] <- criteria_list[[i]][, c(join_key, time_var,
       paste0("CRITERIA_", i)), with = FALSE]
-    
+
     # Normalize column order
-    setcolorder(event_subset, c(join_key, time_var, paste0("CRITERIA_", 
+    setcolorder(event_subset, c(join_key, time_var, paste0("CRITERIA_",
       c(1:length(criteria_list)))))
-    
+
     # Append file to event table
-    event_df <- rbind(event_df, event_subset) 
+    event_df <- rbind(event_df, event_subset)
   }
-    
+
   ########### Subset rows and columns ---------------------------------------
   # Drop observations with missing criteria
   for (i in seq_len(length(criteria_list))) {
     event_df <- subset(event_df, !is.na(get(paste0("CRITERIA", "_", i))))
   }
-  
+
   # Drop criteria variables
   event_df[, c(paste0("CRITERIA_", c(1:length(criteria_list)))) := NULL]
-  
+
   # Change time variable to time of event
   setnames(event_df, time_var, paste0(toupper(event_name), "_TIME"))
-  
+
   # Order by encounter and then time of event
   setkeyv(event_df, c(join_key, paste0(toupper(event_name), "_TIME")))
 
   # Drop duplicate rows
   event_df <- unique(event_df)
-  
+
   ########### Subset to first, last, or all rows per patient
   if (mult == "first") {
     event_df <- event_df[, .SD[1], by = join_key]

@@ -13,7 +13,7 @@ value_change(data, value, direction = c("all", "up", "down"), window_hours,
 
 \item{value}{A numeric value specifying the magnitude of change to identify}
 
-\item{direction}{A string value specifying whether to identify changes in 
+\item{direction}{A string value specifying whether to identify changes in
 the value up (an increase), down (a decrease), or all (both). The default
 value is all.}
 
@@ -23,7 +23,7 @@ for the value change}
 \item{join_key}{A string name of the column to join the time series data
 frame to itself. In other words, the primary key to the 'data' argument.}
 
-\item{time_var}{A string name of the time stamp column in the time series 
+\item{time_var}{A string name of the time stamp column in the time series
 data frame}
 
 \item{value_var}{A string name of the value variable column in the time
@@ -37,17 +37,17 @@ A data.frame, data.table with time stamps of value changes over time
  along with values and time stamps for prior measurements
 }
 \description{
-A function that reads in a time series data frame along with a specified 
+A function that reads in a time series data frame along with a specified
  value change and identifies instances where the value change occurs.
-The user must specify the number of hours over which the value change must 
- take place, the magnitude and direction of the value change, a variable to 
- use to join the table to itself, the time stamp variable, and the value 
- variable. The user must also specify whether to keep all instances that 
+The user must specify the number of hours over which the value change must
+ take place, the magnitude and direction of the value change, a variable to
+ use to join the table to itself, the time stamp variable, and the value
+ variable. The user must also specify whether to keep all instances that
  the value change occurs, or only the first or last instance.
-This function must be used carefully, because certain types of arguments 
- will cause the function to output a data frame with nrow(data)^2, where 
- 'data' is the input data. More specifically, if the user is trying to 
- detect small variations in a value over a large period of time, the size 
+This function must be used carefully, because certain types of arguments
+ will cause the function to output a data frame with nrow(data)^2, where
+ 'data' is the input data. More specifically, if the user is trying to
+ detect small variations in a value over a large period of time, the size
  of input 'data' should be limited.
 }
 \section{Imported functions}{
@@ -70,19 +70,21 @@ This function returns errors for:
 }
 
 \examples{
-\dontrun{
+# Identify all instances of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME", 
+ join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  value_var = "SYSTOLIC", mult = "all"))
+# Identify first instance of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,
  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  value_var = "SYSTOLIC", mult = "first"))
+# Identify last instance of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,
  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  value_var = "SYSTOLIC", mult = "last"))
+# Identify all instances of drops and increases of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "all", window_hours = 6,
  join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  value_var = "SYSTOLIC", mult = "all"))
-}
 
 }

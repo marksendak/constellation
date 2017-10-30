@@ -3,13 +3,13 @@
 #' A function that reads in multiple time series data frames for various events
 #'  and builds indicator variables for each event that occurs within a
 #'  specified number of hours within every timestamp.
-#' 
+#'
 #' The user passes an arbitrary number of time series data frames and
 #'  specifies a name and number of hours to search for each event. The user
 #'  must also specify a variable to use to join the tables, and the time stamp
 #'  variable. Finally, the user can select whether or not to build a final
 #'  indicator variable that shows the final event in the sequence.
-#' 
+#'
 #' This function extends the constellate function to address a different set
 #'  of questions, including: 1) at a specific timestamp, which event do and do
 #'  not occur? 2) which final event triggers the combination of events that
@@ -34,7 +34,7 @@
 #'  variable for the final event in the sequence
 #'
 #' @return A data.frame, data.table with indicator variables for each event.
-#'  The total number of rows is the unique number of time stamps for 
+#'  The total number of rows is the unique number of time stamps for
 #'  all combined measurements.
 #'
 #' @section Imported functions:
@@ -54,18 +54,18 @@
 #' }
 #'
 #' @examples
-#' \dontrun{
+#' # Pass single window_hours
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
 #'  "PULSE", "RESPIRATORY_RATE"), window_hours = 6, join_key = "ENCOUNTER_ID",
-#'  time_var = "RECORDED_TIME") # Pass single window_hours
+#'  time_var = "RECORDED_TIME")
+#' # Pass vector for window_hours
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
 #'  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
-#'  "ENCOUNTER_ID", time_var = "RECORDED_TIME") # Pass vector for window_hours
+#'  "ENCOUNTER_ID", time_var = "RECORDED_TIME")
+#' # Add final event variable
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
 #'  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
-#'  "ENCOUNTER_ID", time_var = "RECORDED_TIME", final_event = TRUE) # Add
-#'  final event variable
-#' }
+#'  "ENCOUNTER_ID", time_var = "RECORDED_TIME", final_event = TRUE)
 #'
 #' @export
 

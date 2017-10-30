@@ -11,8 +11,8 @@ constellate(..., window_hours, join_key, time_var, event_name, mult = c("all",
 \item{...}{An arbitrary number of time series data frames that each include
 the columns 'join_key' and 'time_var'}
 
-\item{window_hours}{A single numeric or vector of numerics specifying the 
-number of hours to search for each event. The order of numerics in the 
+\item{window_hours}{A single numeric or vector of numerics specifying the
+number of hours to search for each event. The order of numerics in the
 vector should align with the order of data frames passed in '...'.}
 
 \item{join_key}{A string name of the column to join all time series data
@@ -51,26 +51,30 @@ This function returns errors for:
 \itemize{
  \item missing arguments (no arguments have defaults)
  \item passing an invalid mult value
- \item passing arguments with invalid classes (window_hours must be numeric 
+ \item passing arguments with invalid classes (window_hours must be numeric
    and event_name must be a string)
  \item passing a window_hours value that is negative or 0
- \item passing join_key or time_var values that are not column names in all 
+ \item passing join_key or time_var values that are not column names in all
    time series data frames
- \item passing an invalid number of window_hours values (1 or the number of 
+ \item passing an invalid number of window_hours values (1 or the number of
  event data frames).
 }
 }
 
 \examples{
-\dontrun{
+# Pass single time window for all time series data frames
+# Subset first event
 constellate(temp, pulse, resp, windows_hours = 6, join_key = "ENCOUNTER_ID",
  time_var = "RECORDED_TIME", event_name = "sirs_vitals", mult = "first")
-constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24), 
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME", 
+# Pass different time window for each time series data frame
+# Subset first event
+constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24),
+ join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  event_name = "SEPSIS", mult = "first")
-constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24), 
- join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME", 
+# Pass different time window for each time series data frame
+# Identify all events
+constellate(temp, pulse, resp, wbc, windows_hours = c(6,6,6,24),
+ join_key = "ENCOUNTER_ID", time_var = "RECORDED_TIME",
  event_name = "SEPSIS", mult = "all")
-}
 
 }

@@ -2,7 +2,7 @@ Package: constellation
 Type: Package
 Title: Identify Event Sequences Using Time Series Joins
 Version: 0.0.1
-Date: 2017-09-05
+Date: 2017-10-30
 Depends: R (>= 3.0.0)
 Imports: data.table (>= 1.9.5), fasttime (>= 1.0-2)
 Suggests: knitr, rmarkdown, ggplot2, devtools,
