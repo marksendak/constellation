@@ -30,17 +30,23 @@ There are three functions included in constellation to build complex features fr
 
 Constellation can be used to build point-based scores for time series data, identify particular sequences of events that occur near each other, and identify when specific changes occur for a given parameter.
 
-If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. 
+If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. You can also view the sepsis vignette on [CRAN](https://cran.r-project.org/web/packages/constellation/vignettes/identify_sepsis.html).
 
 ## Installation
 
-You can install constellation from github with:
+You can install constellation from CRAN with:
+```{r cran_install, eval = FALSE, message = FALSE}
+install.packages("constellation")
+library(constellation)
+```
+
+You can install the development version of constellation from github with:
 
 ```{r gh-installation, message = FALSE}
 devtools::install_github("marksendak/constellation")
 ```
 
-This package is under development in preparation of release on CRAN. If you have any questions, comments, or feedback, please email mark.sendak@gmail.com.
+If you have any questions, comments, or feedback, please email mark.sendak@gmail.com.
 
 ## Example
 
