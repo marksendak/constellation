@@ -92,7 +92,6 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
   # window_hours must be numeric and greater than 0
   for (i in window_hours) {
     if (!is.numeric(i)) stop(" All window_hours must be numeric")
-    if (i <= 0) stop("All window_hours must be greater than 0")
   }
 
   # Ensure that first argument is data frames

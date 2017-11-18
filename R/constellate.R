@@ -98,7 +98,6 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   # window_hours must be numeric and greater than 0
   for (i in window_hours) {
     if (!is.numeric(i)) stop(" All window_hours must be numeric")
-    if (i <= 0) stop("All window_hours must be greater than 0")
   }
 
   # Ensure join_key and time_var are variable names in all passed data frames
