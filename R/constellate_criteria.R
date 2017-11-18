@@ -44,7 +44,7 @@
 #' This function returns errors for:
 #' \itemize{
 #'  \item missing arguments (only final_event has a default value)
-#'  \item passing a window_hours value that is not numeric or negative or 0
+#'  \item passing a window_hours value that is not numeric
 #'  \item passing join_key or time_var values that are not column names in all
 #'    time series data frames
 #'  \item passing an invalid number of criteria_names (must be equal to number
@@ -84,12 +84,17 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
   if (length(criteria_list) < 2) {
     stop("Need to pass at least two time series data frames")
   }
+  if (missing(criteria_names)) stop("Need to provide criteria names")
   if (missing(window_hours)) stop("Need to specify window_hours")
   if (missing(join_key)) stop("Need to specify join key")
   if (missing(time_var)) stop("Need to specify time variable")
-  if (missing(criteria_names)) stop("Need to provide criteria names")
 
-  # window_hours must be numeric and greater than 0
+  # criteria_names must be strings
+  for (i in criteria_names) {
+    if (!is.charater(i)) stop(" All criteria_names must be strings")
+  }
+
+  # window_hours must be numeric
   for (i in window_hours) {
     if (!is.numeric(i)) stop(" All window_hours must be numeric")
   }

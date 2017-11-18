@@ -35,7 +35,6 @@
 #'  \item passing an invalid mult value
 #'  \item passing arguments with invalid classes (window_hours must be numeric
 #'    and event_name must be a string)
-#'  \item passing a window_hours value that is negative or 0
 #'  \item passing join_key or time_var values that are not column names in all
 #'    time series data frames
 #'  \item passing an invalid number of window_hours values (1 or the number of
@@ -80,7 +79,7 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   if (missing(window_hours)) stop("Need to specify window hours")
   if (missing(join_key)) stop("Need to specify join key")
   if (missing(time_var)) stop("Need to specify time variable")
-  if (missing(event_name)) stop("Need to specify event name")
+  if (missing(event_name)) stop("Need to specify an event name")
 
   # Mult argument not from set of options
   mult <- match.arg(mult)
