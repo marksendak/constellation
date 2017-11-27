@@ -91,12 +91,12 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
 
   # criteria_names must be strings
   for (i in criteria_names) {
-    if (!is.character(i)) stop(" All criteria_names must be strings")
+    if (!is.character(i)) stop("All criteria_names must be strings")
   }
 
   # window_hours must be numeric
   for (i in window_hours) {
-    if (!is.numeric(i)) stop(" All window_hours must be numeric")
+    if (!is.numeric(i)) stop("All window_hours must be numeric")
   }
 
   # Ensure that first argument is data frames

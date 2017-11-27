@@ -53,7 +53,6 @@ This function returns errors for:
  \item passing an invalid mult value
  \item passing arguments with invalid classes (window_hours must be numeric
    and event_name must be a string)
- \item passing a window_hours value that is negative or 0
  \item passing join_key or time_var values that are not column names in all
    time series data frames
  \item passing an invalid number of window_hours values (1 or the number of

@@ -1,6 +1,7 @@
 export("constellate")
 export("constellate_criteria")
 export("value_change")
+export("bundle")
 
 import("data.table")
 import("fasttime")

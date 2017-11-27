@@ -45,9 +45,12 @@ test_that("constellate criteria produces expected values for test patient", {
     criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", final_event = TRUE),
     n = 3), crea_plts)
+
+  ## Remove objects
+  rm(crea_plts)
 })
 
-test_that("column names assign properly", {
+test_that("criteria names assign properly", {
   ####### test lab orders without final event
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
@@ -63,6 +66,9 @@ test_that("column names assign properly", {
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("LAB_1", "LAB_2"), window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME"), n = 3), crea_plts)
+
+  ## Remove objects
+  rm(crea_plts)
 })
 
 test_that("final column added correctly", {
@@ -142,15 +148,15 @@ test_that("error messages function", {
   ## Appropriate classes and values
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
-      criteria_names = c("CREATININE", "PLATELETS"), window_hours = "2",
+      criteria_names = c(2, 2), window_hours = 2,
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    "All window_hours must be numeric"
+    "All criteria_names must be strings"
   )
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
-      criteria_names = c("CREATININE", "PLATELETS"), window_hours = -5,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = "2",
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    "All window_hours must be greater than 0"
+    "All window_hours must be numeric"
   )
   expect_error(
     constellate_criteria("foo", plts_testpt,

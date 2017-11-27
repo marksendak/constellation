@@ -63,6 +63,37 @@
 #'    values (1 or the number of bundle data frames).
 #' }
 #' 
+#' @examples
+#' library(data.table)
+#' temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
+#' pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
+#' resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+#'
+#' # Pass single window_hours_pre
+#' # All instances of bundle items within time window of event
+#' bundle(temp, pulse, resp,
+#'     bundle_names = c("PLATELETS", "INR"), window_hours_pre = 24,
+#'     window_hours_post = c(6, 6), join_key = "PAT_ID",
+#'     time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all")
+#' # Pass different window_hours_pre for each bundle time series data frame
+#' # All instances of bundle items within time window of event
+#' bundle(temp, pulse, resp,
+#'     bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 12),
+#'     window_hours_post = c(6, 6), join_key = "PAT_ID",
+#'     time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all")
+#' # Pass different window_hours_pre for each bundle time series data frame
+#' # First instance of each bundle item within time window of event
+#' bundle(temp, pulse, resp,
+#'     bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 12),
+#'     window_hours_post = c(6, 6), join_key = "PAT_ID",
+#'     time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "first")
+#' # Pass different window_hours_pre for each bundle time series data frame
+#' # Last instance of each bundle item within time window of event
+#' bundle(temp, pulse, resp,
+#'     bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 12),
+#'     window_hours_post = c(6, 6), join_key = "PAT_ID",
+#'     time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "last")
+#' 
 #' @export
 
 bundle <- function(events, ..., bundle_names, window_hours_pre, 
@@ -73,15 +104,16 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
 
   ########## Error handling --------------------------------------------------
   # Missing arguments
-  if (missing(events)) stop("Need to pass an events data frame")
   if (length(bundle_list) < 1) {
-      stop("Need to pass at least one bundle item data frames")
+      stop("Need to pass at least one bundle item data frame")
   }
   if (missing(bundle_names)) stop("Need to provide bundle names")
-  if (missing(window_hours_pre)) stop("Need to specify window hours before the
-    event")
-  if (missing(window_hours_post)) stop("Need to specify window hours after the
-    event")
+  if (missing(window_hours_pre)) {
+    stop("Need to specify window hours before the event")
+  }
+  if (missing(window_hours_post)) {
+    stop("Need to specify window hours after the event")
+  }
   if (missing(join_key)) stop("Need to specify join key")
   if (missing(time_var)) stop("Need to specify time variable")
   if (missing(event_name)) stop("Need to specify an event name")
@@ -98,17 +130,17 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
 
   # bundle_names must be strings
   for (i in bundle_names) {
-    if (!is.character(i)) stop(" All bundle_names must be strings")
+    if (!is.character(i)) stop("All bundle_names must be strings")
   }
 
   # window_hours_pre must be numeric
   for (i in window_hours_pre) {
-    if (!is.numeric(i)) stop(" All window_hours_pre must be numeric")
+    if (!is.numeric(i)) stop("All window_hours_pre must be numeric")
   }
 
   # window_hours_post must be numeric
   for (i in window_hours_post) {
-    if (!is.numeric(i)) stop(" All window_hours_post must be numeric")
+    if (!is.numeric(i)) stop("All window_hours_post must be numeric")
   }
 
   # event_name must be string
@@ -176,6 +208,11 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
   setnames(events, time_var, event_name)
 
   ########### Overlap joins ---------------------------------------------------
+  # Initialize bundle start and end variables
+  BUNDLE_START = NULL
+  BUNDLE_END = NULL
+
+  # Go through different cases of time window arguments
   if (length(window_hours_pre) == 1 & length(window_hours_post) == 1) {
     # Build bundle window
     events[, BUNDLE_START := get(event_name) - (window_hours_pre * 60 * 60)]
