@@ -42,6 +42,9 @@ test_that("constellate produces expected values for test patient", {
   expect_equal(constellate(crea_testpt, plts_testpt, window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
     mult = "last"), crea_plts)
+
+  ## Remove objects
+  rm(crea_plts)
 })
 
 test_that("event name assigns properly", {
@@ -59,6 +62,9 @@ test_that("event name assigns properly", {
   expect_equal(head(constellate(crea_testpt, plts_testpt, window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "BLAH",
     mult = "all"), n = 3), crea_plts)
+
+  ## Remove objects
+  rm(crea_plts)
 })
 
 test_that("window hours roll over", {
@@ -79,9 +85,6 @@ test_that("window hours roll over", {
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
       mult = "all")
   )
-  
-  ## Remove objects
-  rm(crea_plts)
 })
 
 test_that("default arguments function properly", {
@@ -125,7 +128,7 @@ test_that("error messages function", {
   expect_error(
     constellate(crea_testpt, plts_testpt, window_hours = 2, 
       join_key = "PAT_ID", time_var = "RECORDED_TIME", mult = "all"),
-    "Need to specify event name"
+    "Need to specify an event name"
   )
   
   ## Arguments don't match
@@ -153,12 +156,6 @@ test_that("error messages function", {
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
       mult = "all"),
     "All window_hours must be numeric"
-  )
-  expect_error(
-    constellate(crea_testpt, plts_testpt, window_hours = -5,
-      join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
-      mult = "all"),
-    "All window_hours must be greater than 0"
   )
   
   ## Missing column

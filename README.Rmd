@@ -22,13 +22,16 @@ knitr::opts_chunk$set(
 
 Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://CRAN.R-project.org/package=data.table). Three datasets (labs, vitals, and orders) with randomly synthesized time series data for a cohort of 100 patients are included to facilitate testing of functions.
 
-There are three functions included in constellation to build complex features from time series data:
+There are four functions included in constellation to build complex features from time series data:
 
 * `value_change()` identify increases or decreases in a value within a given time window
-* `constellate()` identify time stamps when a series of events occur within a given time window
+* `constellate()` identify time stamps when a series of events occurs within a given time window
 * `constellate_criteria()` identify which events occur within a given time window for every measurement time stamp
+* `bundle()` identify which events occur within a given time window of a given event
 
-Constellation can be used to build point-based scores for time series data, identify particular sequences of events that occur near each other, and identify when specific changes occur for a given parameter.
+The `constellate_criteria()` and `bundle()` function are similar, but the `bundle()` function is anchored around a specific event table. The `bundle()` function identifies events that occur within a given time window of a **specific** event that is supplied to the function. On the other hand, the `constellate_criteria()` function identifies events that occur within a given time window of **any** event that is supplied to the function.
+
+Constellation can be used to build point-based scores for time series data, identify particular sequences of events that occur near each other, identify when specific changes occur for a given parameter, and identify individual events that occur around a specified time stamp.
 
 If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. You can also view the sepsis vignette on [CRAN](https://cran.r-project.org/web/packages/constellation/vignettes/identify_sepsis.html).
 
@@ -89,6 +92,8 @@ head(systolic_bp_drop)
 ## Why constellation?
 
 In clinical medicine, there are a subset of conditions that are defined by a sequence of related events that unfold over time. These conditions are described as a "*constellation of signs and symptoms*."
+
+Another piece of medical jargon that made it into the package is the concept of a treatment bundle. The `bundle()` function was originally designed to calculate the time stamp at which a group of treatments is delivered for every patient within a specified amount of time of developing a condition.
 
 ## Duke Institute for Health Innovation
 

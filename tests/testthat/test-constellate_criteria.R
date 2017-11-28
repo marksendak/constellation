@@ -7,7 +7,7 @@ plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 
 ## Tests
 test_that("constellate criteria produces expected values for test patient", {
-  ####### test lab orders without final event
+  ####### test lab orders with boolean value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME = 
         fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"), CREATININE = 0, 
@@ -24,30 +24,60 @@ test_that("constellate criteria produces expected values for test patient", {
   ## Test
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
-    join_key = "PAT_ID", time_var = "RECORDED_TIME"), n = 3), crea_plts)
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "boolean"),
+    n = 3), crea_plts)
 
-  ####### test lab orders with final event
+  ####### test lab orders with time value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"), CREATININE = 0,
-        PLATELETS = 1, FINAL_EVENT = "PLATELETS"),
+        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
+        CREATININE = fastPOSIXct(NA, tz = "GMT"),
+        PLATELETS = fastPOSIXct("2010-02-25 10:27:44", tz = "GMT")),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"), CREATININE = 1,
-        PLATELETS = 0, FINAL_EVENT = "CREATININE"),
+        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+        CREATININE = fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+        PLATELETS = fastPOSIXct(NA, tz = "GMT")),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"), CREATININE = 0,
-        PLATELETS = 1, FINAL_EVENT = "PLATELETS")
+        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"),
+        CREATININE = fastPOSIXct(NA, tz = "GMT"),
+        PLATELETS = fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"))
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
 
   ## Test
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
-    join_key = "PAT_ID", time_var = "RECORDED_TIME", final_event = TRUE),
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "time"),
     n = 3), crea_plts)
+
+  ## Remove objects
+  rm(crea_plts)
+
+  ####### test lab orders with result value
+  crea_plts <- rbind(
+      data.table(PAT_ID = 108546, RECORDED_TIME =
+        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
+        CREATININE = NA, PLATELETS = 186.91296),
+      data.table(PAT_ID = 108546, RECORDED_TIME =
+        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+        CREATININE = 0.7804720, PLATELETS = NA),
+      data.table(PAT_ID = 108546, RECORDED_TIME =
+        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"),
+        CREATININE = NA, PLATELETS = 181.77154)
+      )
+  crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
+
+  ## Test
+  expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
+    criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "result",
+    result_var = "VALUE"), n = 3), crea_plts, tolerance = 1e-5)
+
+  ## Remove objects
+  rm(crea_plts)
 })
 
-test_that("column names assign properly", {
+test_that("criteria names assign properly", {
   ####### test lab orders without final event
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
@@ -63,15 +93,9 @@ test_that("column names assign properly", {
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("LAB_1", "LAB_2"), window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME"), n = 3), crea_plts)
-})
 
-test_that("final column added correctly", {
-  expect_equal(ncol(constellate_criteria(crea_testpt, plts_testpt,
-    criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
-    join_key = "PAT_ID", time_var = "RECORDED_TIME")), 4)
-  expect_equal(ncol(constellate_criteria(crea_testpt, plts_testpt,
-    criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
-    join_key = "PAT_ID", time_var = "RECORDED_TIME", final_event = TRUE)), 5)
+  ## Remove objects
+  rm(crea_plts)
 })
 
 test_that("rows added correctly", {
@@ -103,6 +127,18 @@ test_that("window hours values roll over", {
   )
 })
 
+test_that("default arguments function properly", {
+  ## Function output identical when you drop value argument and set to boolean
+  expect_equal(
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+      join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "boolean"),
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+      join_key = "PAT_ID", time_var = "RECORDED_TIME")
+  )
+})
+
 test_that("error messages function", {
   ## Missing arguments
   expect_error(
@@ -125,32 +161,38 @@ test_that("error messages function", {
     constellate_criteria(crea_testpt, plts_testpt,
       criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
       time_var = "RECORDED_TIME"),
-    "Need to specify join key"
+    "Need to specify join_key"
   )
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
       criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
       join_key = "PAT_ID"),
-    "Need to specify time variable"
+    "Need to specify time_var"
   )
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt, window_hours = 2,
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    "Need to provide criteria names"
+    "Need to provide criteria_names"
+  )
+  expect_error(
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+      join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "result"),
+    "Need to specify result_var"
   )
 
   ## Appropriate classes and values
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
-      criteria_names = c("CREATININE", "PLATELETS"), window_hours = "2",
+      criteria_names = c(2, 2), window_hours = 2,
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    "All window_hours must be numeric"
+    "All criteria_names must be strings"
   )
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
-      criteria_names = c("CREATININE", "PLATELETS"), window_hours = -5,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = "2",
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    "All window_hours must be greater than 0"
+    "All window_hours must be numeric"
   )
   expect_error(
     constellate_criteria("foo", plts_testpt,
@@ -171,6 +213,23 @@ test_that("error messages function", {
       criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
       join_key = "PAT_ID", time_var = "foo"),
     "'time_var' is not a column name in all time series data frames"
+  )
+
+  ## Arguments don't match
+  expect_error(
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+      join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "foo"),
+    "'arg' should be one of"
+  )
+
+  ## Missing result_var
+  expect_error(
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+      join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "result",
+      result_var = "foo"),
+    "'result_var' is not a column name in all time series data frames"
   )
 
   ## Same number of criteria names and window hours as data frames
