@@ -2,8 +2,7 @@
 % Please edit documentation in R/bundle.R
 \name{bundle}
 \alias{bundle}
-\title{Identify whether a group of bundle items occur around a given time period
- of an incident event}
+\title{Identify bundle items that occur around a given event}
 \usage{
 bundle(events, ..., bundle_names, window_hours_pre, window_hours_post, join_key,
   time_var, event_name, mult = c("all", "first", "last"))

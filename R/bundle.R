@@ -1,5 +1,4 @@
-#' Identify whether a group of bundle items occur around a given time period
-#'  of an incident event
+#' Identify bundle items that occur around a given event
 #'
 #' A function that reads in a data frame of incident events along with multiple
 #'  time series data frames of bundle items and calculates whether or not each
