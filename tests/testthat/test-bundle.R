@@ -19,12 +19,12 @@ test_that("bundle produces expected values for test patient", {
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      PLATELETS =
                      fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA)),
+                     INR = fastPOSIXct(NA, tz = "GMT")),
       data.table(PAT_ID = 108546, CREATININE =
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      PLATELETS =
                      fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA))
+                     INR = fastPOSIXct(NA, tz = "GMT"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "CREATININE"))
 
@@ -46,7 +46,7 @@ test_that("bundle produces expected values for test patient", {
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      PLATELETS =
                      fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA)),
+                     INR = fastPOSIXct(NA, tz = "GMT")),
       data.table(PAT_ID = 108546, CREATININE =
                      fastPOSIXct("2010-03-01 08:57:15", tz = "GMT"),
                      PLATELETS =
@@ -73,7 +73,7 @@ test_that("bundle produces expected values for test patient", {
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      PLATELETS =
                      fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA)),
+                     INR = fastPOSIXct(NA, tz = "GMT")),
       data.table(PAT_ID = 108546, CREATININE =
                      fastPOSIXct("2010-03-01 08:57:15", tz = "GMT"),
                      PLATELETS =
@@ -100,17 +100,18 @@ test_that("bundle names assign properly", {
                      fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
                      BUNDLE_1 =
                      fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-                     BUNDLE_2 = fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
+                     BUNDLE_2 = 
+                     fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
       data.table(PAT_ID = 108546, CREATININE =
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      BUNDLE_1 =
                      fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     BUNDLE_2 = fastPOSIXct(NA)),
+                     BUNDLE_2 = fastPOSIXct(NA, tz = "GMT")),
       data.table(PAT_ID = 108546, CREATININE =
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      BUNDLE_1 =
                      fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     BUNDLE_2 = fastPOSIXct(NA))
+                     BUNDLE_2 = fastPOSIXct(NA, tz = "GMT"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "CREATININE"))
 
@@ -137,12 +138,12 @@ test_that("event name assigns properly", {
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      PLATELETS =
                      fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA)),
+                     INR = fastPOSIXct(NA, tz = "GMT")),
       data.table(PAT_ID = 108546, BLAH = 
                      fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
                      PLATELETS =
                      fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA))
+                     INR = fastPOSIXct(NA, tz = "GMT"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "BLAH"))
   
