@@ -1,30 +1,58 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-constellation
-=============
 
-[![Build Status](https://travis-ci.org/marksendak/constellation.svg?branch=master)](https://travis-ci.org/marksendak/constellation) [![Windows build status](https://ci.appveyor.com/api/projects/status/github/marksendak/constellation?branch=master&svg=true)](https://ci.appveyor.com/project/marksendak/constellation)
+# constellation
 
-Overview
---------
+[![Build
+Status](https://travis-ci.org/marksendak/constellation.svg?branch=master)](https://travis-ci.org/marksendak/constellation)
+[![Windows build
+status](https://ci.appveyor.com/api/projects/status/github/marksendak/constellation?branch=master&svg=true)](https://ci.appveyor.com/project/marksendak/constellation)
 
-Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://CRAN.R-project.org/package=data.table). Three datasets (labs, vitals, and orders) with randomly synthesized time series data for a cohort of 100 patients are included to facilitate testing of functions.
+## Overview
 
-There are four functions included in constellation to build complex features from time series data:
+Constellation contains a set of functions for applying multidimensional,
+time window based logic to time series data frames of arbitrary length.
+Constellation was developed to enable rapid and flexible identification
+of series of events that occur in hospitalized patients. The functions
+have been abstracted for general purpose use with time series data.
+Constellation extends and provides a friendly API to rolling joins and
+overlap joins implemented in
+[data.table](https://CRAN.R-project.org/package=data.table). Three
+datasets (labs, vitals, and orders) with randomly synthesized time
+series data for a cohort of 100 patients are included to facilitate
+testing of functions.
 
--   `value_change()` identify increases or decreases in a value within a given time window
--   `constellate()` identify time stamps when a series of events occurs within a given time window
--   `constellate_criteria()` identify which events occur within a given time window for every measurement time stamp
--   `bundle()` identify which events occur within a given time window of a given event
+There are four functions included in constellation to build complex
+features from time series data:
 
-The `constellate_criteria()` and `bundle()` function are similar, but the `bundle()` function is anchored around a specific event table. The `bundle()` function identifies events that occur within a given time window of a **specific** event that is supplied to the function. On the other hand, the `constellate_criteria()` function identifies events that occur within a given time window of **any** event that is supplied to the function.
+  - `value_change()` identify increases or decreases in a value within a
+    given time window
+  - `constellate()` identify time stamps when a series of events occurs
+    within a given time window
+  - `constellate_criteria()` identify which events occur within a given
+    time window for every measurement time stamp
+  - `bundle()` identify which events occur within a given time window of
+    a given event
 
-Constellation can be used to build point-based scores for time series data, identify particular sequences of events that occur near each other, identify when specific changes occur for a given parameter, and identify individual events that occur around a specified time stamp.
+The `constellate_criteria()` and `bundle()` function are similar, but
+the `bundle()` function is anchored around a specific event table. The
+`bundle()` function identifies events that occur within a given time
+window of a **specific** event that is supplied to the function. On the
+other hand, the `constellate_criteria()` function identifies events that
+occur within a given time window of **any** event that is supplied to
+the function.
 
-If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. You can also view the sepsis vignette on [CRAN](https://cran.r-project.org/web/packages/constellation/vignettes/identify_sepsis.html).
+Constellation can be used to build point-based scores for time series
+data, identify particular sequences of events that occur near each
+other, identify when specific changes occur for a given parameter, and
+identify individual events that occur around a specified time stamp.
 
-Installation
-------------
+If you are new to constellation, the best place to start is the
+`vignette("constellation", "identify_sepsis")`. You can also view the
+sepsis vignette on
+[CRAN](https://cran.r-project.org/package=constellation/vignettes/identify_sepsis.html).
+
+## Installation
 
 You can install constellation from CRAN with:
 
@@ -33,18 +61,20 @@ install.packages("constellation")
 library(constellation)
 ```
 
-You can install the development version of constellation from github with:
+You can install the development version of constellation from github
+with:
 
 ``` r
 devtools::install_github("marksendak/constellation")
 ```
 
-If you have any questions, comments, or feedback, please email <mark.sendak@gmail.com>.
+If you have any questions, comments, or feedback, please email
+<mark.sendak@gmail.com>.
 
-Example
--------
+## Example
 
-Below are several variations of finding systolic blood pressure drops of 40 over a 6 hour period.
+Below are several variations of finding systolic blood pressure drops of
+40 over a 6 hour period.
 
 Examine systolic blood pressure data:
 
@@ -64,7 +94,8 @@ head(systolic_bp)
 #> 6: 108546 2010-02-25 07:14:18 119.7529 SYSTOLIC_BP
 ```
 
-Identify the first systolic blood pressure drop per patient:
+Identify the first systolic blood pressure drop per
+patient:
 
 ``` r
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
@@ -87,7 +118,8 @@ head(systolic_bp_drop)
 #> 6:     132.99234
 ```
 
-Identify the last systolic blood pressure drop per patient:
+Identify the last systolic blood pressure drop per
+patient:
 
 ``` r
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
@@ -110,7 +142,8 @@ head(systolic_bp_drop)
 #> 6:     138.28222
 ```
 
-Identify all systolic blood pressure drops per patient:
+Identify all systolic blood pressure drops per
+patient:
 
 ``` r
 systolic_bp_drop <- value_change(systolic_bp, value = 40, direction = "down",
@@ -133,14 +166,20 @@ head(systolic_bp_drop)
 #> 6:      82.16874
 ```
 
-Why constellation?
-------------------
+## Why constellation?
 
-In clinical medicine, there are a subset of conditions that are defined by a sequence of related events that unfold over time. These conditions are described as a "*constellation of signs and symptoms*."
+In clinical medicine, there are a subset of conditions that are defined
+by a sequence of related events that unfold over time. These conditions
+are described as a “*constellation of signs and symptoms*.”
 
-Another piece of medical jargon that made it into the package is the concept of a treatment bundle. The `bundle()` function was originally designed to calculate the time stamp at which a group of treatments is delivered for every patient within a specified amount of time of developing a condition.
+Another piece of medical jargon that made it into the package is the
+concept of a treatment bundle. The `bundle()` function was originally
+designed to calculate the time stamp at which a group of treatments is
+delivered for every patient within a specified amount of time of
+developing a condition.
 
-Duke Institute for Health Innovation
-------------------------------------
+## Duke Institute for Health Innovation
 
-constellation was originally developed to support a machine learning project at the [Duke Institute for Health Innovation](http://www.dihi.org/) to predict sepsis.
+constellation was originally developed to support a machine learning
+project at the [Duke Institute for Health
+Innovation](http://www.dihi.org/) to predict sepsis.

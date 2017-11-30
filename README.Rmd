@@ -33,7 +33,7 @@ The `constellate_criteria()` and `bundle()` function are similar, but the `bundl
 
 Constellation can be used to build point-based scores for time series data, identify particular sequences of events that occur near each other, identify when specific changes occur for a given parameter, and identify individual events that occur around a specified time stamp.
 
-If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. You can also view the sepsis vignette on [CRAN](https://cran.r-project.org/web/packages/constellation/vignettes/identify_sepsis.html).
+If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. You can also view the sepsis vignette on [CRAN](https://cran.r-project.org/package=constellation/vignettes/identify_sepsis.html).
 
 ## Installation
 
