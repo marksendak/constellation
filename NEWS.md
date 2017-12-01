@@ -1,3 +1,10 @@
+Development Version
+===================
+
+## CHANGES
+
+* Fixed window_hours for blood pressure drop in sepsis definition
+
 Version 0.1.0
 =============
 

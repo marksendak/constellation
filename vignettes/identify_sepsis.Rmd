@@ -24,7 +24,7 @@ Implementing a sepsis definition motivated development of the constellation pack
     + Creatinine > 2.0 (**24 hours**)
     + INR > 1.5 (**24 hours**)
     + Total bilirubin > 2.0 (**24 hours**)
-    + systolic BP < 90 or decrease in SBP by > 40 over 6 hours (**6 hours**)
+    + systolic BP < 90 or decrease in SBP by > 40 over 6 hours (**24 hours**)
     + Platelets < 100 (**24 hours**)
     + Lactate >= 2 (**24 hours**)
 
