@@ -20,3 +20,11 @@ Version 0.1.0
 ## BUG FIXES
 
 * Remove github_install() command calls from Identifying Sepsis vignette to align with CRAN policies
+
+
+Version 0.1.1
+=============
+
+## CHANGES
+
+* Changed timezone conversion from GMT to UTC

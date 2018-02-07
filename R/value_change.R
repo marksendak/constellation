@@ -108,7 +108,7 @@ value_change <- function(data, value, direction = c("all", "up", "down"),
   # Ensure classes
   data <- data.table(data)
   set(data, j = value_var, value = as.numeric(data[[value_var]]))
-  set(data, j = time_var, value = fastPOSIXct(data[[time_var]], tz = "GMT"))
+  set(data, j = time_var, value = fastPOSIXct(data[[time_var]], tz = "UTC"))
 
   # Subset data
   data <- data[, c(join_key, time_var, value_var), with = FALSE]

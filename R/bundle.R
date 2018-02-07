@@ -186,7 +186,7 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
     
     # Ensure class of time_var
     set(bundle_list[[i]], j = time_var,
-        value = fastPOSIXct(bundle_list[[i]][[time_var]], tz = "GMT"))
+        value = fastPOSIXct(bundle_list[[i]][[time_var]], tz = "UTC"))
     
     # Create bundle variable
     bundle_list[[i]][, c(bundle_names[i]) := get(time_var)]
@@ -201,7 +201,7 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
 
   # Ensure class of time_var
   set(events, j = time_var,
-      value = fastPOSIXct(events[[time_var]], tz = "GMT"))
+      value = fastPOSIXct(events[[time_var]], tz = "UTC"))
 
   # Change name
   setnames(events, time_var, event_name)

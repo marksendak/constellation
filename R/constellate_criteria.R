@@ -164,7 +164,7 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
   for (i in seq_len(length(criteria_list))) {
     # Ensure class of time_var
     set(criteria_list[[i]], j = time_var,
-      value = fastPOSIXct(criteria_list[[i]][[time_var]], tz = "GMT"))
+      value = fastPOSIXct(criteria_list[[i]][[time_var]], tz = "UTC"))
 
     # Create criteria variable based on value argument
     if (value == "time") {
