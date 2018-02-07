@@ -9,14 +9,14 @@ plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 test_that("constellate criteria produces expected values for test patient", {
   ####### test lab orders with boolean value
   crea_plts <- rbind(
-      data.table(PAT_ID = 108546, RECORDED_TIME = 
-        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"), CREATININE = 0, 
+      data.table(PAT_ID = 108546, RECORDED_TIME =
+        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"), CREATININE = 0,
         PLATELETS = 1),
-      data.table(PAT_ID = 108546, RECORDED_TIME = 
-        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"), CREATININE = 1,
+      data.table(PAT_ID = 108546, RECORDED_TIME =
+        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"), CREATININE = 1,
         PLATELETS = 0),
-      data.table(PAT_ID = 108546, RECORDED_TIME = 
-        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"), CREATININE = 0,
+      data.table(PAT_ID = 108546, RECORDED_TIME =
+        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"), CREATININE = 0,
         PLATELETS = 1)
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
@@ -30,17 +30,17 @@ test_that("constellate criteria produces expected values for test patient", {
   ####### test lab orders with time value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-        CREATININE = fastPOSIXct(NA, tz = "GMT"),
-        PLATELETS = fastPOSIXct("2010-02-25 10:27:44", tz = "GMT")),
+        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+        CREATININE = fastPOSIXct(NA, tz = "UTC"),
+        PLATELETS = fastPOSIXct("2010-02-25 10:27:44", tz = "UTC")),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
-        CREATININE = fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
-        PLATELETS = fastPOSIXct(NA, tz = "GMT")),
+        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
+        CREATININE = fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
+        PLATELETS = fastPOSIXct(NA, tz = "UTC")),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"),
-        CREATININE = fastPOSIXct(NA, tz = "GMT"),
-        PLATELETS = fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"))
+        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"),
+        CREATININE = fastPOSIXct(NA, tz = "UTC"),
+        PLATELETS = fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"))
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
 
@@ -56,13 +56,13 @@ test_that("constellate criteria produces expected values for test patient", {
   ####### test lab orders with result value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
+        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
         CREATININE = NA, PLATELETS = 186.91296),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
         CREATININE = 0.7804720, PLATELETS = NA),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"),
+        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"),
         CREATININE = NA, PLATELETS = 181.77154)
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
@@ -81,11 +81,11 @@ test_that("criteria names assign properly", {
   ####### test lab orders without final event
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"), LAB_1 = 0, LAB_2 = 1),
+        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"), LAB_1 = 0, LAB_2 = 1),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"), LAB_1 = 1, LAB_2 = 0),
+        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"), LAB_1 = 1, LAB_2 = 0),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "GMT"), LAB_1 = 0, LAB_2 = 1)
+        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"), LAB_1 = 0, LAB_2 = 1)
   )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
 

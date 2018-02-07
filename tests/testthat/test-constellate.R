@@ -10,11 +10,11 @@ test_that("constellate produces expected values for test patient", {
   ####### all events
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, TEST_TIME =
-                     fastPOSIXct("2010-02-28 22:49:15", tz = "GMT")),
+                     fastPOSIXct("2010-02-28 22:49:15", tz = "UTC")),
       data.table(PAT_ID = 108546, TEST_TIME =
-                     fastPOSIXct("2010-03-01 08:57:15", tz = "GMT")),
+                     fastPOSIXct("2010-03-01 08:57:15", tz = "UTC")),
       data.table(PAT_ID = 108546, TEST_TIME =
-                     fastPOSIXct("2010-03-02 08:50:45", tz = "GMT"))
+                     fastPOSIXct("2010-03-02 08:50:45", tz = "UTC"))
   )
   setkeyv(crea_plts, c("PAT_ID", "TEST_TIME"))
 
@@ -22,22 +22,22 @@ test_that("constellate produces expected values for test patient", {
   expect_equal(head(constellate(crea_testpt, plts_testpt, window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
     mult = "all"), n = 3), crea_plts)
-  
+
   ####### first event per patient
   crea_plts <- data.table(PAT_ID = 108546,
-    TEST_TIME = fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"))
+    TEST_TIME = fastPOSIXct("2010-02-28 22:49:15", tz = "UTC"))
   setkey(crea_plts, "PAT_ID")
-  
+
   ## Test
   expect_equal(constellate(crea_testpt, plts_testpt, window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
     mult = "first"), crea_plts)
-  
+
   ####### last event per patient
   crea_plts <- data.table(PAT_ID = 108546,
-    TEST_TIME = fastPOSIXct("2010-06-29 15:28:15", tz = "GMT"))
+    TEST_TIME = fastPOSIXct("2010-06-29 15:28:15", tz = "UTC"))
   setkey(crea_plts, "PAT_ID")
-  
+
   ## Test
   expect_equal(constellate(crea_testpt, plts_testpt, window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
@@ -50,14 +50,14 @@ test_that("constellate produces expected values for test patient", {
 test_that("event name assigns properly", {
   crea_plts <- rbind(
     data.table(PAT_ID = 108546, BLAH_TIME =
-                 fastPOSIXct("2010-02-28 22:49:15", tz = "GMT")),
+                 fastPOSIXct("2010-02-28 22:49:15", tz = "UTC")),
     data.table(PAT_ID = 108546, BLAH_TIME =
-                 fastPOSIXct("2010-03-01 08:57:15", tz = "GMT")),
+                 fastPOSIXct("2010-03-01 08:57:15", tz = "UTC")),
     data.table(PAT_ID = 108546, BLAH_TIME =
-                 fastPOSIXct("2010-03-02 08:50:45", tz = "GMT"))
+                 fastPOSIXct("2010-03-02 08:50:45", tz = "UTC"))
   )
   setkeyv(crea_plts, c("PAT_ID", "BLAH_TIME"))
-  
+
   ## Test
   expect_equal(head(constellate(crea_testpt, plts_testpt, window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "BLAH",
@@ -71,16 +71,16 @@ test_that("window hours roll over", {
   expect_equal(
     constellate(crea_testpt, plts_testpt, window_hours = 2,
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
-      mult = "all"), 
+      mult = "all"),
     constellate(crea_testpt, plts_testpt, window_hours = c(2,2),
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
       mult = "all")
   )
-  
+
   expect_equal(
     constellate(crea_testpt, plts_testpt, window_hours = 4,
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
-                mult = "all"), 
+                mult = "all"),
     constellate(crea_testpt, plts_testpt, window_hours = c(4,4),
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
       mult = "all")
@@ -126,11 +126,11 @@ test_that("error messages function", {
     "Need to specify time variable"
   )
   expect_error(
-    constellate(crea_testpt, plts_testpt, window_hours = 2, 
+    constellate(crea_testpt, plts_testpt, window_hours = 2,
       join_key = "PAT_ID", time_var = "RECORDED_TIME", mult = "all"),
     "Need to specify an event name"
   )
-  
+
   ## Arguments don't match
   expect_error(
     constellate(crea_testpt, plts_testpt, window_hours = 2,
@@ -138,7 +138,7 @@ test_that("error messages function", {
       mult = "foo"),
     "'arg' should be one of"
   )
-  
+
   ## Appropriate classes and values
   expect_error(
     constellate("foo", plts_testpt, window_hours = 2, join_key = "PAT_ID",
@@ -157,21 +157,21 @@ test_that("error messages function", {
       mult = "all"),
     "All window_hours must be numeric"
   )
-  
+
   ## Missing column
   expect_error(
     constellate(crea_testpt, plts_testpt, window_hours = 2,
       join_key = "foo", time_var = "RECORDED_TIME", event_name = "TEST",
       mult = "all"),
-    "'join_key' is not a column name in all time series data frames" 
+    "'join_key' is not a column name in all time series data frames"
   )
   expect_error(
     constellate(crea_testpt, plts_testpt, window_hours = 2,
       join_key = "PAT_ID", time_var = "foo", event_name = "TEST",
       mult = "all"),
-    "'time_var' is not a column name in all time series data frames" 
+    "'time_var' is not a column name in all time series data frames"
   )
-  
+
   ## Same number of window hours as data frames
   expect_error(
     constellate(crea_testpt, plts_testpt, window_hours = c(2, 2, 2),

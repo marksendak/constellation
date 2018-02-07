@@ -11,20 +11,20 @@ test_that("bundle produces expected values for test patient", {
   ####### all events
   crea_bundle <- rbind(
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+                     fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
+                     fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA, tz = "GMT")),
+                     fastPOSIXct("2010-02-28 09:27:15", tz = "UTC"),
+                     INR = fastPOSIXct(NA, tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA, tz = "GMT"))
+                     fastPOSIXct("2010-02-28 22:49:15", tz = "UTC"),
+                     INR = fastPOSIXct(NA, tz = "UTC"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "CREATININE"))
 
@@ -34,54 +34,54 @@ test_that("bundle produces expected values for test patient", {
     window_hours_post = c(6, 6), join_key = "PAT_ID",
     time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
     n = 3), crea_bundle)
-  
+
   ####### first event per patient
   crea_bundle <- rbind(
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+                     fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
+                     fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA, tz = "GMT")),
+                     fastPOSIXct("2010-02-28 09:27:15", tz = "UTC"),
+                     INR = fastPOSIXct(NA, tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-03-01 08:57:15", tz = "GMT"),
+                     fastPOSIXct("2010-03-01 08:57:15", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct("2010-03-01 09:12:55", tz = "GMT"))
+                     fastPOSIXct("2010-02-28 09:27:15", tz = "UTC"),
+                     INR = fastPOSIXct("2010-03-01 09:12:55", tz = "UTC"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "CREATININE"))
-  
+
   ## Test
   expect_equal(head(bundle(crea_testpt, plts_testpt, inr_testpt,
     bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
     window_hours_post = c(6, 6), join_key = "PAT_ID",
     time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "first"),
     n = 3), crea_bundle)
-  
+
   ####### last event per patient
   crea_bundle <- rbind(
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+                     fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
+                     fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA, tz = "GMT")),
+                     fastPOSIXct("2010-02-28 22:49:15", tz = "UTC"),
+                     INR = fastPOSIXct(NA, tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-03-01 08:57:15", tz = "GMT"),
+                     fastPOSIXct("2010-03-01 08:57:15", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-03-01 11:14:15", tz = "GMT"),
-                     INR = fastPOSIXct("2010-03-01 09:12:55", tz = "GMT"))
+                     fastPOSIXct("2010-03-01 11:14:15", tz = "UTC"),
+                     INR = fastPOSIXct("2010-03-01 09:12:55", tz = "UTC"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "CREATININE"))
-  
+
   ## Test
   expect_equal(head(bundle(crea_testpt, plts_testpt, inr_testpt,
     bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
@@ -97,21 +97,21 @@ test_that("bundle names assign properly", {
   ####### test bundle names for all events
   crea_bundle <- rbind(
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+                     fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
                      BUNDLE_1 =
-                     fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-                     BUNDLE_2 = 
-                     fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
+                     fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+                     BUNDLE_2 =
+                     fastPOSIXct("2010-02-26 05:15:30", tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      BUNDLE_1 =
-                     fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     BUNDLE_2 = fastPOSIXct(NA, tz = "GMT")),
+                     fastPOSIXct("2010-02-28 09:27:15", tz = "UTC"),
+                     BUNDLE_2 = fastPOSIXct(NA, tz = "UTC")),
       data.table(PAT_ID = 108546, CREATININE =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      BUNDLE_1 =
-                     fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     BUNDLE_2 = fastPOSIXct(NA, tz = "GMT"))
+                     fastPOSIXct("2010-02-28 22:49:15", tz = "UTC"),
+                     BUNDLE_2 = fastPOSIXct(NA, tz = "UTC"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "CREATININE"))
 
@@ -130,23 +130,23 @@ test_that("event name assigns properly", {
   ####### all events
   crea_bundle <- rbind(
       data.table(PAT_ID = 108546, BLAH =
-                     fastPOSIXct("2010-02-26 01:48:18", tz = "GMT"),
+                     fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-25 10:27:44", tz = "GMT"),
-                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "GMT")),
+                     fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+                     INR = fastPOSIXct("2010-02-26 05:15:30", tz = "UTC")),
       data.table(PAT_ID = 108546, BLAH =
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 09:27:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA, tz = "GMT")),
-      data.table(PAT_ID = 108546, BLAH = 
-                     fastPOSIXct("2010-02-28 21:41:50", tz = "GMT"),
+                     fastPOSIXct("2010-02-28 09:27:15", tz = "UTC"),
+                     INR = fastPOSIXct(NA, tz = "UTC")),
+      data.table(PAT_ID = 108546, BLAH =
+                     fastPOSIXct("2010-02-28 21:41:50", tz = "UTC"),
                      PLATELETS =
-                     fastPOSIXct("2010-02-28 22:49:15", tz = "GMT"),
-                     INR = fastPOSIXct(NA, tz = "GMT"))
+                     fastPOSIXct("2010-02-28 22:49:15", tz = "UTC"),
+                     INR = fastPOSIXct(NA, tz = "UTC"))
   )
   setkeyv(crea_bundle, c("PAT_ID", "BLAH"))
-  
+
   ## Test
   expect_equal(head(bundle(crea_testpt, plts_testpt, inr_testpt,
     bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
@@ -318,16 +318,16 @@ test_that("error messages function", {
       bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
       window_hours_post = c(6, 6), join_key = "foo",
       time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
-    "'join_key' is not a column name in all time series data frames" 
+    "'join_key' is not a column name in all time series data frames"
   )
   expect_error(
     bundle(crea_testpt, plts_testpt, inr_testpt,
       bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
       window_hours_post = c(6, 6), join_key = "PAT_ID",
       time_var = "foo", event_name = "CREATININE", mult = "all"),
-    "'time_var' is not a column name in all time series data frames" 
+    "'time_var' is not a column name in all time series data frames"
   )
-  
+
     bundle(crea_testpt, plts_testpt, inr_testpt,
       bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
       window_hours_post = c(6, 6), join_key = "PAT_ID",
