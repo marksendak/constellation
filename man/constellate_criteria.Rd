@@ -63,9 +63,11 @@ This function can be used to calculate risk scores at any measurement
  timestamp by building a new variable after the function runs and returns
  the new data frame. The risk score can add up the crieteria from boolean
  values (e.g.
- \href{https://www.mdcalc.com/sirs-sepsis-septic-shock-criteria}{SIRS Criteria})
+ \href{https://www.mdcalc.com/sirs-sepsis-septic-shock-criteria}
+   {SIRS Criteria})
  or can be a linear combination of criteria (e.g.,
- \href{https://www.mdcalc.com/national-early-warning-score-news}{NEWS Score}).
+ \href{https://www.mdcalc.com/national-early-warning-score-news}
+   {NEWS Score}).
 }
 \section{Imported functions}{
 
@@ -105,6 +107,7 @@ constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
 # Show the value of each criteria at the time the event occurs
 constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
- "PAT_ID", time_var = "RECORDED_TIME", value = "result", result_var = "VALUE")
+ "PAT_ID", time_var = "RECORDED_TIME", value = "result",
+ result_var = "VALUE")
 
 }

@@ -34,7 +34,7 @@ data frames passed in '...'.}
 frames}
 
 \item{time_var}{A string name of the time stamp column in all time series
-data frames}
+data frames. The class of time_var must be POSIXct in all data frames.}
 
 \item{event_name}{A string name of the events in the events data frame}
 
@@ -58,14 +58,16 @@ The user must provide names for each bundle item, define the time window
  variables to use to join the different tables. Lastly, the user can specify
  whether to return all instances that each bundle item occurs around the
  incident event, or whether to pull only the first or last instant for each
- bundle item. 
+ bundle item.
+All time series data frames must contain columns for joining the tables (
+ join_key) and time stamps (time_var). The time_var column must be class 
+ POSIXct in all the data frames.
 This function can ingest an arbitrary number of data frames for different
  bundle items around an incident event.
 }
 \section{Imported functions}{
 
-fastPOSIXct() from fasttime package, foverlaps() from data.table and
- general data.table syntax
+foverlaps() from data.table and general data.table syntax
 }
 
 \section{Errors}{
@@ -86,9 +88,14 @@ This function returns errors for:
 
 \examples{
 library(data.table)
+library(fasttime)
 temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+
+temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 
 # Pass single window_hours_pre
 # All instances of bundle items within time window of event

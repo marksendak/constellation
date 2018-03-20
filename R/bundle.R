@@ -71,9 +71,9 @@
 #' pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 #' resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
 #'
-#' temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
-#' pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
-#' resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
+#' temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 #'
 #' # Pass single window_hours_pre
 #' # All instances of bundle items within time window of event
