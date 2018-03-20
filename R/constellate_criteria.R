@@ -22,9 +22,11 @@
 #'  timestamp by building a new variable after the function runs and returns
 #'  the new data frame. The risk score can add up the crieteria from boolean
 #'  values (e.g.
-#'  \href{https://www.mdcalc.com/sirs-sepsis-septic-shock-criteria}{SIRS Criteria})
+#'  \href{https://www.mdcalc.com/sirs-sepsis-septic-shock-criteria}
+#'    {SIRS Criteria})
 #'  or can be a linear combination of criteria (e.g.,
-#'  \href{https://www.mdcalc.com/national-early-warning-score-news}{NEWS Score}).
+#'  \href{https://www.mdcalc.com/national-early-warning-score-news}
+#'    {NEWS Score}).
 #'
 #' @param ... An arbitrary number of time series data frames that each include
 #'  the columns 'join_key' and 'time_var'
@@ -84,7 +86,8 @@
 #' # Show the value of each criteria at the time the event occurs
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
 #'  "PULSE", "RESPIRATORY_RATE"), window_hours = c(6,6,6), join_key =
-#'  "PAT_ID", time_var = "RECORDED_TIME", value = "result", result_var = "VALUE")
+#'  "PAT_ID", time_var = "RECORDED_TIME", value = "result",
+#'  result_var = "VALUE")
 #'
 #' @export
 
@@ -142,7 +145,8 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
   if (!missing(result_var)) {
     for (i in seq_len(length(criteria_list))) {
       if (sum(grepl(result_var, names(criteria_list[[i]]))) == 0) {
-        stop("'result_var' is not a column name in all time series data frames")
+        stop(paste0("'result_var' is not a column name in all time series",
+          " data frames"))
       }
     }
   }

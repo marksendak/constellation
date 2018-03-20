@@ -6,6 +6,14 @@ crea_testpt <- labs[VARIABLE == "CREATININE" & PAT_ID == "108546"]
 plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 inr_testpt <- labs[VARIABLE == "INR" & PAT_ID == "108546"]
 
+## Set time variables to POSIXct
+crea_testpt <- crea_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+plts_testpt <- plts_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+inr_testpt <- inr_testpt[, RECORDED_TIME :=
+                             fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
 ## Tests
 test_that("bundle produces expected values for test patient", {
   ####### all events
@@ -312,7 +320,29 @@ test_that("error messages function", {
     "'event_name' must be a character string"
   )
 
-  ## Missing column
+  ## Same number of window hours as bundle data frames
+  expect_error(
+    bundle(crea_testpt, plts_testpt, inr_testpt,
+             bundle_names = c("PLATELETS", "INR"),
+             window_hours_pre = c(24, 24, 24), window_hours_post = c(6, 6),
+             join_key = "PAT_ID", time_var = "RECORDED_TIME",
+             event_name = "CREATININE", mult = "all"),
+    paste0("Need to pass a single 'window_hours_pre' value for all",
+     " bundle data frames or a 'window_hours_pre' value for each bundle data",
+     " frame.")
+  )
+  expect_error(
+    bundle(crea_testpt, plts_testpt, inr_testpt,
+         bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
+         window_hours_post = c(6, 6, 6), join_key = "PAT_ID",
+         time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
+    paste0("Need to pass a single 'window_hours_post' value for all",
+         " bundle data frames or a 'window_hours_post' value for each bundle",
+         " data frame.")
+  )
+
+  ## Missing column from bundle data frames
+  setnames(plts_testpt, names(plts_testpt)[1:2], c("foo", "RECORDED_TIME"))
   expect_error(
     bundle(crea_testpt, plts_testpt, inr_testpt,
       bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
@@ -320,6 +350,7 @@ test_that("error messages function", {
       time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
     "'join_key' is not a column name in all time series data frames"
   )
+  setnames(plts_testpt, names(plts_testpt)[1:2], c("PAT_ID", "foo"))
   expect_error(
     bundle(crea_testpt, plts_testpt, inr_testpt,
       bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
@@ -327,29 +358,48 @@ test_that("error messages function", {
       time_var = "foo", event_name = "CREATININE", mult = "all"),
     "'time_var' is not a column name in all time series data frames"
   )
+  setnames(plts_testpt, names(plts_testpt)[1:2], c("PAT_ID", "RECORDED_TIME"))
 
-    bundle(crea_testpt, plts_testpt, inr_testpt,
-      bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
-      window_hours_post = c(6, 6), join_key = "PAT_ID",
-      time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all")
-
-  ## Same number of window hours as bundle data frames
+  ## Missing column from events data frame
+  setnames(crea_testpt, names(crea_testpt)[1:2], c("foo", "RECORDED_TIME"))
   expect_error(
     bundle(crea_testpt, plts_testpt, inr_testpt,
-      bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24, 24),
-      window_hours_post = c(6, 6), join_key = "PAT_ID",
-      time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
-    paste0("Need to pass a single 'window_hours_pre' value for all",
-      " bundle data frames or a 'window_hours_pre' value for each bundle data",
-      " frame.")
+         bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
+         window_hours_post = c(6, 6), join_key = "foo",
+         time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
+    "'join_key' is not a column name in all time series data frames"
   )
+  setnames(crea_testpt, names(crea_testpt)[1:2], c("PAT_ID", "foo"))
   expect_error(
     bundle(crea_testpt, plts_testpt, inr_testpt,
-      bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
-      window_hours_post = c(6, 6, 6), join_key = "PAT_ID",
-      time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
-    paste0("Need to pass a single 'window_hours_post' value for all",
-      " bundle data frames or a 'window_hours_post' value for each bundle",
-      " data frame.")
+         bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
+         window_hours_post = c(6, 6), join_key = "PAT_ID",
+         time_var = "foo", event_name = "CREATININE", mult = "all"),
+    "'time_var' is not a column name in all time series data frames"
   )
+  setnames(crea_testpt, names(crea_testpt)[1:2], c("PAT_ID", "RECORDED_TIME"))
+
+  ## Time variable in bundle data frames not POSIXct
+  plts_testpt[, RECORDED_TIME := as.Date(RECORDED_TIME)]
+  expect_error(
+    bundle(crea_testpt, plts_testpt, inr_testpt,
+         bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
+         window_hours_post = c(6, 6), join_key = "PAT_ID",
+         time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
+    "'time_var' column in all time series data frames must be POSIXct class"
+  )
+  plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
+  plts_testpt <- plts_testpt[, RECORDED_TIME :=
+                                 fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
+  ## Time variable in events data frame not POSIXct
+  crea_testpt[, RECORDED_TIME := as.Date(RECORDED_TIME)]
+  expect_error(
+    bundle(crea_testpt, plts_testpt, inr_testpt,
+         bundle_names = c("PLATELETS", "INR"), window_hours_pre = c(24, 24),
+         window_hours_post = c(6, 6), join_key = "PAT_ID",
+         time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
+    "'time_var' column in all time series data frames must be POSIXct class"
+  )
+  setnames(plts_testpt, names(plts_testpt)[1:2], c("PAT_ID", "RECORDED_TIME"))
 })

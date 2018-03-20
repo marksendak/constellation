@@ -8,7 +8,10 @@
 #'  variables to use to join the different tables. Lastly, the user can specify
 #'  whether to return all instances that each bundle item occurs around the
 #'  incident event, or whether to pull only the first or last instant for each
-#'  bundle item. 
+#'  bundle item.
+#' All time series data frames must contain columns for joining the tables (
+#'  join_key) and time stamps (time_var). The time_var column must be class 
+#'  POSIXct in all the data frames.
 #' This function can ingest an arbitrary number of data frames for different
 #'  bundle items around an incident event.
 #'
@@ -32,7 +35,7 @@
 #' @param join_key A string name of the column to join all time series data
 #'  frames
 #' @param time_var A string name of the time stamp column in all time series
-#'  data frames
+#'  data frames. The class of time_var must be POSIXct in all data frames.
 #' @param event_name A string name of the events in the events data frame
 #' @param mult A string specifying whether to return the first, last, or all
 #'  instance(s) of every bundle item occurring within the specified time window
@@ -45,8 +48,7 @@
 #'  window.
 #' 
 #' @section Imported functions:
-#' fastPOSIXct() from fasttime package, foverlaps() from data.table and
-#'  general data.table syntax
+#' foverlaps() from data.table and general data.table syntax
 #' 
 #' @section Errors:
 #' This function returns errors for:
@@ -64,9 +66,14 @@
 #' 
 #' @examples
 #' library(data.table)
+#' library(fasttime)
 #' temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 #' pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 #' resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+#'
+#' temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
+#' pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
+#' resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
 #'
 #' # Pass single window_hours_pre
 #' # All instances of bundle items within time window of event
@@ -117,6 +124,9 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
   if (missing(time_var)) stop("Need to specify time variable")
   if (missing(event_name)) stop("Need to specify an event name")
 
+  # Mult not from set of options
+  mult <- match.arg(mult)
+
   # events must be a data frame
   if (!is.data.frame(events)) stop("Need to pass data frame in first argument")
 
@@ -163,7 +173,7 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
       " data frame."))
   }
 
-  # Ensure join_key and time_var are variable names in all passed data frames
+  # Ensure join_key and time_var are variable names in bundle data frames
   for (i in seq_len(length(bundle_list))) {
     if (sum(grepl(join_key, names(bundle_list[[i]]))) == 0) {
       stop("'join_key' is not a column name in all time series data frames")
@@ -173,8 +183,27 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
     }
   }
 
-  # Mult not from set of options
-  mult <- match.arg(mult)
+  # Ensure join_key and time_var are variable names in events data frame
+  if (!(join_key %in% names(events))) {
+    stop("'join_key' is not a column name in all time series data frames")
+  }
+  if (!(time_var %in% names(events))) {
+    stop("'time_var' is not a column name in all time series data frames")
+  }
+
+  # Ensure time_var variable in bundle bundle data frames is class POSIXct
+  for (i in seq_len(length(bundle_list))) {
+    if (!("POSIXct" %in% class(bundle_list[[i]][[time_var]]))) {
+      stop(paste0("'time_var' column in all time series data frames",
+        " must be POSIXct class"))
+    }
+  }
+
+  # Ensure time_var variable in events data frame is class POSIXct
+  if (!("POSIXct" %in% class(events[[time_var]]))) {
+    stop(paste0("'time_var' column in all time series data frames",
+      " must be POSIXct class"))
+  }
 
   ########### Prep data for joins ---------------------------------------------
   ## Bundle data frames
@@ -183,10 +212,6 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
     bundle_list[[i]] <- data.table(
       bundle_list[[i]][, c(join_key, time_var), with = FALSE]
     )
-    
-    # Ensure class of time_var
-    set(bundle_list[[i]], j = time_var,
-        value = fastPOSIXct(bundle_list[[i]][[time_var]], tz = "UTC"))
     
     # Create bundle variable
     bundle_list[[i]][, c(bundle_names[i]) := get(time_var)]
@@ -198,10 +223,6 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
   ## event data frame
   # Subset data frame
   events <- data.table(events[, c(join_key, time_var), with = FALSE])
-
-  # Ensure class of time_var
-  set(events, j = time_var,
-      value = fastPOSIXct(events[[time_var]], tz = "UTC"))
 
   # Change name
   setnames(events, time_var, event_name)

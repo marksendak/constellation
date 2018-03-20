@@ -57,7 +57,7 @@ Next, prep the timestamps
 ```{r timestamps, message = FALSE}
 for (dt in list(vitals, labs, orders)) {
     date_col <- grep("TIME", names(dt), value = TRUE)
-    set(dt, j = date_col, value = fastPOSIXct(dt[[date_col]]))
+    set(dt, j = date_col, value = fastPOSIXct(dt[[date_col]], tz = "UTC"))
 }
 ```
 

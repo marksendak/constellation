@@ -61,7 +61,7 @@ library(constellation)
 library(fasttime)
 
 systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
-systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME)]
+systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 head(systolic_bp)
 ```
 
