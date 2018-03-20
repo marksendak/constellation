@@ -5,12 +5,12 @@
 #'  within a specified number from a timestamp are flagged. The variables for
 #'  each event can be populated with the time the event took place, a boolean
 #'  variable (0 or 1) indicating whether or not the event took place, or the
-#'  result of the variable at the time the event took place. 
+#'  result of the variable at the time the event took place.
 #'
 #' The user passes an arbitrary number of time series data frames and
 #'  specifies a name and number of hours to search for each event. The user
 #'  must also specify a variable to use to join the tables, and the time stamp
-#'  variable. Finally, the user selects how to populate the individual event 
+#'  variable. Finally, the user selects how to populate the individual event
 #'  variables.
 #'
 #' This function extends the constellate function to address a different set
@@ -18,15 +18,13 @@
 #'  not occur? 2) what is the sequence of events that trigger the constellation
 #'  of events that I'm interested in? 3) What are the results of each criteria
 #'  at the times that each criteria are met?
-#' This function can be used to calculate risk scores at any measurement 
+#' This function can be used to calculate risk scores at any measurement
 #'  timestamp by building a new variable after the function runs and returns
 #'  the new data frame. The risk score can add up the crieteria from boolean
 #'  values (e.g.
-#'  \href{https://www.mdcalc.com/sirs-sepsis-septic-shock-criteria}
-#'    {SIRS Criteria})
+#'  \href{https://www.mdcalc.com/sirs-sepsis-septic-shock-criteria}{SIRS Criteria})
 #'  or can be a linear combination of criteria (e.g.,
-#'  \href{https://www.mdcalc.com/national-early-warning-score-news}
-#'    {NEWS Score}).
+#'  \href{https://www.mdcalc.com/national-early-warning-score-news}{NEWS Score}).
 #'
 #' @param ... An arbitrary number of time series data frames that each include
 #'  the columns 'join_key' and 'time_var'
@@ -40,7 +38,7 @@
 #'  frames
 #' @param time_var A string name of the time stamp column in all time series
 #'  data frames
-#' @param value A string specifying the value to be entered within each 
+#' @param value A string specifying the value to be entered within each
 #'  criteria column. Options include boolean (0 or 1, depdending on whether
 #'  the criteria event occurred), the time of the criteria event, or the
 #'  result stored within the criteria event. The default value is boolean.
