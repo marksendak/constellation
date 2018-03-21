@@ -19,7 +19,7 @@ vector should align with the order of data frames passed in '...'.}
 frames}
 
 \item{time_var}{A string name of the time stamp column in all time series
-data frames}
+data frames. The class of time_var must be POSIXct in all data frames.}
 
 \item{event_name}{A string name for events across the time series data
 frames}
@@ -35,14 +35,15 @@ A function that reads in multiple time series data frames and calculates
  instances when a constellation of events occur.
 The user must specify the number of hours over which each event must take
  place, a variable to use to join the tables, and the time stamp variable.
- In addition, the user must specify the event name and whether to keep all
+ The timestamps variable in every data frame must be POSIXct class. In 
+ addition, the user must specify the event name and whether to keep all
  instances that events occur, or only the first or last instance. This
  function can ingest an arbitrary number of data frames with longitudinal
  time series data.
 }
 \section{Imported functions}{
 
-fastPOSIXct() from fasttime package and data.table syntax
+general data.table syntax
 }
 
 \section{Errors}{
@@ -62,10 +63,15 @@ This function returns errors for:
 
 \examples{
 library(data.table)
+library(fasttime)
 temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
 wbc <- as.data.table(labs[VARIABLE == "WBC"])
+temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+wbc[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 
 # Pass single time window for all time series data frames
 # Subset first event

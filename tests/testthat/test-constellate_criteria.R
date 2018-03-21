@@ -267,6 +267,4 @@ test_that("error messages function", {
       result_var = "foo"),
     "'result_var' is not a column name in all time series data frames"
   )
-
-  ## Missing result_var
 })

@@ -4,7 +4,8 @@
 #'  instances when a constellation of events occur.
 #' The user must specify the number of hours over which each event must take
 #'  place, a variable to use to join the tables, and the time stamp variable.
-#'  In addition, the user must specify the event name and whether to keep all
+#'  The timestamps variable in every data frame must be POSIXct class. In 
+#'  addition, the user must specify the event name and whether to keep all
 #'  instances that events occur, or only the first or last instance. This
 #'  function can ingest an arbitrary number of data frames with longitudinal
 #'  time series data.
@@ -17,7 +18,7 @@
 #' @param join_key A string name of the column to join all time series data
 #'  frames
 #' @param time_var A string name of the time stamp column in all time series
-#'  data frames
+#'  data frames. The class of time_var must be POSIXct in all data frames.
 #' @param event_name A string name for events across the time series data
 #'  frames
 #' @param mult A string specifying whether to return the first, last, or all
@@ -26,7 +27,7 @@
 #' @return A data.frame, data.table with time stamps of qualifying events.
 #'
 #' @section Imported functions:
-#' fastPOSIXct() from fasttime package and data.table syntax
+#' general data.table syntax
 #'
 #' @section Errors:
 #' This function returns errors for:
@@ -43,10 +44,16 @@
 #'
 #' @examples
 #' library(data.table)
+#' library(fasttime)
 #' temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 #' pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 #' resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
 #' wbc <- as.data.table(labs[VARIABLE == "WBC"])
+
+#' temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' wbc[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 #'
 #' # Pass single time window for all time series data frames
 #' # Subset first event
@@ -84,12 +91,14 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   # Mult argument not from set of options
   mult <- match.arg(mult)
 
-  # Argument class
+  # Ensure that first argument is data frames
   for (i in seq_len(length(criteria_list))) {
     if (!is.data.frame(criteria_list[[i]])) {
       stop("Need to pass only data frames in first argument")
     }
   }
+
+  # event_name must be string
   if (!is.character(event_name)) {
     stop("'event_name' must be a character string")
   }
@@ -97,6 +106,13 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
   # window_hours must be numeric and greater than 0
   for (i in window_hours) {
     if (!is.numeric(i)) stop(" All window_hours must be numeric")
+  }
+
+  # Number of hour windows is 1 or matches number of data frames passed
+  if (length(criteria_list) != length(window_hours) &
+    length(window_hours) != 1) {
+    stop(paste0("Need to pass a single window hour length for all criteria",
+      " data frames or a window hour length for each criteria data frame."))
   }
 
   # Ensure join_key and time_var are variable names in all passed data frames
@@ -109,11 +125,12 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
     }
   }
 
-  # Number of hour windows is 1 or matches number of data frames passed
-  if (length(criteria_list) != length(window_hours) &
-    length(window_hours) != 1) {
-    stop(paste0("Need to pass a single window hour length for all criteria",
-      " data frames or a window hour length for each criteria data frame."))
+  # Ensure time_var variable in all data frames is class POSIXct
+  for (i in seq_len(length(criteria_list))) {
+    if (!("POSIXct" %in% class(criteria_list[[i]][[time_var]]))) {
+      stop(paste0("'time_var' column in all time series data frames",
+        " must be POSIXct class"))
+    }
   }
 
   ########### Prep data for joins ---------------------------------------------
@@ -122,10 +139,6 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
     criteria_list[[i]] <- data.table(
         criteria_list[[i]][, c(join_key, time_var), with = FALSE]
       )
-
-    # Ensure class of time_var
-    set(criteria_list[[i]], j = time_var,
-      value = fastPOSIXct(criteria_list[[i]][[time_var]], tz = "UTC"))
 
     # Create criteria variable
     criteria_list[[i]][, c(paste0("CRITERIA", "_", i)) :=

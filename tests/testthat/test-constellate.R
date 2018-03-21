@@ -5,6 +5,12 @@ context("Constellate")
 crea_testpt <- labs[VARIABLE == "CREATININE" & PAT_ID == "108546"]
 plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 
+## Set time variables to POSIXct
+crea_testpt <- crea_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+plts_testpt <- plts_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
 ## Tests
 test_that("constellate produces expected values for test patient", {
   ####### all events
@@ -158,6 +164,15 @@ test_that("error messages function", {
     "All window_hours must be numeric"
   )
 
+  ## Same number of window hours as data frames
+  expect_error(
+    constellate(crea_testpt, plts_testpt, window_hours = c(2, 2, 2),
+      join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
+      mult = "all"),
+    paste0("Need to pass a single window hour length for all criteria data",
+      " frames or a window hour length for each criteria data frame.")
+  )
+
   ## Missing column
   expect_error(
     constellate(crea_testpt, plts_testpt, window_hours = 2,
@@ -172,12 +187,15 @@ test_that("error messages function", {
     "'time_var' is not a column name in all time series data frames"
   )
 
-  ## Same number of window hours as data frames
+  ## Time variable in events data frame not POSIXct
+  crea_testpt[, RECORDED_TIME := as.Date(RECORDED_TIME)]
   expect_error(
-    constellate(crea_testpt, plts_testpt, window_hours = c(2, 2, 2),
+    constellate(crea_testpt, plts_testpt, window_hours = 2,
       join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "TEST",
       mult = "all"),
-    paste0("Need to pass a single window hour length for all criteria data",
-      " frames or a window hour length for each criteria data frame.")
+    "'time_var' column in all time series data frames must be POSIXct class"
   )
+  crea_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
+  crea_testpt <- crea_testpt[, RECORDED_TIME :=
+                                 fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 })
