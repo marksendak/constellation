@@ -5,6 +5,12 @@ context("Constellate and Show Criteria")
 crea_testpt <- labs[VARIABLE == "CREATININE" & PAT_ID == "108546"]
 plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 
+## Set time variables to POSIXct
+crea_testpt <- crea_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+plts_testpt <- plts_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
 ## Tests
 test_that("constellate criteria produces expected values for test patient", {
   ####### test lab orders with boolean value
@@ -181,7 +187,21 @@ test_that("error messages function", {
     "Need to specify result_var"
   )
 
+  ## Arguments don't match
+  expect_error(
+    constellate_criteria(crea_testpt, plts_testpt,
+        criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+        join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "foo"),
+    "'arg' should be one of"
+  )
+
   ## Appropriate classes and values
+  expect_error(
+    constellate_criteria("foo", plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+      join_key = "PAT_ID", time_var = "RECORDED_TIME"),
+    "Need to pass only data frames in first argument"
+  )
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
       criteria_names = c(2, 2), window_hours = 2,
@@ -194,11 +214,14 @@ test_that("error messages function", {
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
     "All window_hours must be numeric"
   )
+
+  ## Same number of window hours as data frames
   expect_error(
-    constellate_criteria("foo", plts_testpt,
-      criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("CREATININE", "PLATELETS"), window_hours = c(2, 2, 2),
       join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    "Need to pass only data frames in first argument"
+    paste0("Need to pass a single window hour length for all criteria data",
+         " frames or a window hour length for each criteria data frame.")
   )
 
   ## Join key and time variable missing
@@ -215,15 +238,28 @@ test_that("error messages function", {
     "'time_var' is not a column name in all time series data frames"
   )
 
-  ## Arguments don't match
+  ## Time variable in events data frame not POSIXct
+  crea_testpt[, RECORDED_TIME := as.Date(RECORDED_TIME)]
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
       criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
-      join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "foo"),
-    "'arg' should be one of"
+      join_key = "PAT_ID", time_var = "RECORDED_TIME"),
+    "'time_var' column in all time series data frames must be POSIXct class"
+  )
+  crea_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
+  crea_testpt <- crea_testpt[, RECORDED_TIME :=
+                                 fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
+  ## Same number of criteria names as data frames
+  expect_error(
+    constellate_criteria(crea_testpt, plts_testpt,
+      criteria_names = c("PLATELETS"), window_hours = 2, join_key = "PAT_ID",
+      time_var = "RECORDED_TIME"),
+    paste0("Need to pass a name for each criteria data frame. The number of",
+      " data frames does not equal the number of names.")
   )
 
-  ## Missing result_var
+  ## result_var is present in all data frames if selected
   expect_error(
     constellate_criteria(crea_testpt, plts_testpt,
       criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
@@ -232,19 +268,5 @@ test_that("error messages function", {
     "'result_var' is not a column name in all time series data frames"
   )
 
-  ## Same number of criteria names and window hours as data frames
-  expect_error(
-    constellate_criteria(crea_testpt, plts_testpt,
-      criteria_names = c("PLATELETS"), window_hours = 2, join_key = "PAT_ID",
-      time_var = "RECORDED_TIME"),
-    paste0("Need to pass a name for each criteria data frame. The number of",
-      " data frames does not equal the number of names.")
-  )
-  expect_error(
-    constellate_criteria(crea_testpt, plts_testpt,
-      criteria_names = c("CREATININE", "PLATELETS"), window_hours = c(2, 2, 2),
-      join_key = "PAT_ID", time_var = "RECORDED_TIME"),
-    paste0("Need to pass a single window hour length for all criteria data",
-      " frames or a window hour length for each criteria data frame.")
-  )
+  ## Missing result_var
 })

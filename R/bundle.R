@@ -191,7 +191,7 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
     stop("'time_var' is not a column name in all time series data frames")
   }
 
-  # Ensure time_var variable in bundle bundle data frames is class POSIXct
+  # Ensure time_var variable in bundle data frames is class POSIXct
   for (i in seq_len(length(bundle_list))) {
     if (!("POSIXct" %in% class(bundle_list[[i]][[time_var]]))) {
       stop(paste0("'time_var' column in all time series data frames",
@@ -203,6 +203,12 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
   if (!("POSIXct" %in% class(events[[time_var]]))) {
     stop(paste0("'time_var' column in all time series data frames",
       " must be POSIXct class"))
+  }
+
+  # Number of bunele names provided matches number of data frames passed
+  if (length(bundle_list) != length(bundle_names)) {
+    stop(paste0("Need to pass a name for each bundle data frame. The number",
+      " of data frames does not equal the number of names."))
   }
 
   ########### Prep data for joins ---------------------------------------------

@@ -10,7 +10,8 @@
 #' The user passes an arbitrary number of time series data frames and
 #'  specifies a name and number of hours to search for each event. The user
 #'  must also specify a variable to use to join the tables, and the time stamp
-#'  variable. Finally, the user selects how to populate the individual event
+#'  variable. The timestamps variable in every data frame must be POSIXct
+#'  class. Finally, the user selects how to populate the individual event
 #'  variables.
 #'
 #' This function extends the constellate function to address a different set
@@ -37,7 +38,7 @@
 #' @param join_key A string name of the column to join all time series data
 #'  frames
 #' @param time_var A string name of the time stamp column in all time series
-#'  data frames
+#'  data frames. The class of time_var must be POSIXct in all data frames.
 #' @param value A string specifying the value to be entered within each
 #'  criteria column. Options include boolean (0 or 1, depdending on whether
 #'  the criteria event occurred), the time of the criteria event, or the
@@ -51,7 +52,7 @@
 #'  all combined measurements.
 #'
 #' @section Imported functions:
-#' fastPOSIXct() from fasttime package and data.table syntax
+#' general data.table syntax
 #'
 #' @section Errors:
 #' This function returns errors for:
@@ -69,9 +70,14 @@
 #'
 #' @examples
 #' library(data.table)
+#' library(fasttime)
 #' temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 #' pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 #' resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+#'
+#' temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+#' resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 #'
 #' # Pass single window_hours
 #' constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
@@ -104,21 +110,31 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
   if (missing(time_var)) stop("Need to specify time_var")
   if (missing(criteria_names)) stop("Need to provide criteria_names")
 
-  # criteria_names must be strings
-  for (i in criteria_names) {
-    if (!is.character(i)) stop("All criteria_names must be strings")
-  }
-
-  # window_hours must be numeric and greater than 0
-  for (i in window_hours) {
-    if (!is.numeric(i)) stop("All window_hours must be numeric")
-  }
+  # Value argument not from set of options
+  value <- match.arg(value)
 
   # Ensure that first argument is data frames
   for (i in seq_len(length(criteria_list))) {
     if (!is.data.frame(criteria_list[[i]])) {
       stop("Need to pass only data frames in first argument")
     }
+  }
+
+  # criteria_names must be strings
+  for (i in criteria_names) {
+    if (!is.character(i)) stop("All criteria_names must be strings")
+  }
+
+  # window_hours must be numeric
+  for (i in window_hours) {
+    if (!is.numeric(i)) stop("All window_hours must be numeric")
+  }
+
+  # Number of window_hours is 1 or matches number of data frames passed
+  if (length(criteria_list) != length(window_hours) &
+      length(window_hours) != 1) {
+    stop(paste0("Need to pass a single window hour length for all criteria",
+      " data frames or a window hour length for each criteria data frame."))
   }
 
   # Ensure join_key and time_var are variables names in all data frames
@@ -131,12 +147,18 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
     }
   }
 
-  # Value argument not from set of options
-  value <- match.arg(value)
+  # Ensure time_var variable in all data frames is class POSIXct
+  for (i in seq_len(length(criteria_list))) {
+    if (!("POSIXct" %in% class(criteria_list[[i]][[time_var]]))) {
+      stop(paste0("'time_var' column in all time series data frames",
+        " must be POSIXct class"))
+    }
+  }
 
-  # Must pass result_var if select result option
-  if (value == "result" & missing(result_var)) {
-    stop("Need to specify result_var")
+  # Number of names provided matches number of data frames passed
+  if (length(criteria_list) != length(criteria_names)) {
+    stop(paste0("Need to pass a name for each criteria data frame. The number",
+      " of data frames does not equal the number of names."))
   }
 
   # If result_var is supplied, ensure it is in all data frames
@@ -149,25 +171,13 @@ constellate_criteria <- function(..., criteria_names, window_hours, join_key,
     }
   }
 
-  # Number of names provided matches number of data frames passed
-  if (length(criteria_list) != length(criteria_names)) {
-    stop(paste0("Need to pass a name for each criteria data frame. The number",
-      " of data frames does not equal the number of names."))
-  }
-
-  # Number of hour windows matches number of data frames passed
-  if (length(criteria_list) != length(window_hours) &
-      length(window_hours) != 1) {
-    stop(paste0("Need to pass a single window hour length for all criteria",
-      " data frames or a window hour length for each criteria data frame."))
+  # Must pass result_var if select result option
+  if (value == "result" & missing(result_var)) {
+    stop("Need to specify result_var")
   }
 
   ############ Prep data for joins --------------------------------------------
   for (i in seq_len(length(criteria_list))) {
-    # Ensure class of time_var
-    set(criteria_list[[i]], j = time_var,
-      value = fastPOSIXct(criteria_list[[i]][[time_var]], tz = "UTC"))
-
     # Create criteria variable based on value argument
     if (value == "time") {
       # Subset data frames

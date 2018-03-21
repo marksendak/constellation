@@ -401,5 +401,18 @@ test_that("error messages function", {
          time_var = "RECORDED_TIME", event_name = "CREATININE", mult = "all"),
     "'time_var' column in all time series data frames must be POSIXct class"
   )
-  setnames(plts_testpt, names(plts_testpt)[1:2], c("PAT_ID", "RECORDED_TIME"))
+  crea_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
+  crea_testpt <- crea_testpt[, RECORDED_TIME :=
+                                 fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
+  ## Number of bundle names doesn't match number of bundle data frames
+  expect_error(
+    bundle(crea_testpt, plts_testpt, inr_testpt,
+         bundle_names = c("PLATELETS", "INR", "foo"),
+         window_hours_pre = c(24, 24), window_hours_post = c(6, 6),
+         join_key = "PAT_ID", time_var = "RECORDED_TIME",
+         event_name = "CREATININE", mult = "all"),
+    paste0("Need to pass a name for each bundle data frame. The number",
+           " of data frames does not equal the number of names.")
+  )
 })

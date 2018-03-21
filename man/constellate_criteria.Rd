@@ -23,7 +23,7 @@ vector should align with the order of data frames passed in '...'.}
 frames}
 
 \item{time_var}{A string name of the time stamp column in all time series
-data frames}
+data frames. The class of time_var must be POSIXct in all data frames.}
 
 \item{value}{A string specifying the value to be entered within each
 criteria column. Options include boolean (0 or 1, depdending on whether
@@ -51,7 +51,8 @@ A function that reads in multiple time series data frames for various events
 The user passes an arbitrary number of time series data frames and
  specifies a name and number of hours to search for each event. The user
  must also specify a variable to use to join the tables, and the time stamp
- variable. Finally, the user selects how to populate the individual event
+ variable. The timestamps variable in every data frame must be POSIXct
+ class. Finally, the user selects how to populate the individual event
  variables.
 
 This function extends the constellate function to address a different set
@@ -69,7 +70,7 @@ This function can be used to calculate risk scores at any measurement
 }
 \section{Imported functions}{
 
-fastPOSIXct() from fasttime package and data.table syntax
+general data.table syntax
 }
 
 \section{Errors}{
@@ -90,9 +91,14 @@ This function returns errors for:
 
 \examples{
 library(data.table)
+library(fasttime)
 temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
+
+temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 
 # Pass single window_hours
 constellate_criteria(temp, pulse, resp, criteria_names = c("TEMPERATURE",
