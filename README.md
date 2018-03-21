@@ -37,10 +37,17 @@ features from time series data:
 The `constellate_criteria()` and `bundle()` function are similar, but
 the `bundle()` function is anchored around a specific event table. The
 `bundle()` function identifies events that occur within a given time
-window of a **specific** event that is supplied to the function. On the
-other hand, the `constellate_criteria()` function identifies events that
-occur within a given time window of **any** event that is supplied to
-the function.
+window of a **specific** event data frame that is supplied to the
+function. On the other hand, the `constellate_criteria()` function
+identifies events that occur within a given time window of **any** event
+data frame that is supplied to the function. The first data frame passed
+to the `bundle()` function is used as an anchor to search through the
+subsequent data frames passed to the function. The order of data frames
+is significant and passing different data frames as the first argument
+will generate different results. On the other hand, the order in which
+you pass data frames to the `constellate_criteria()` function is
+insignificant. Passing data frames in different orders will generate
+equivalent results.
 
 Constellation can be used to build point-based scores for time series
 data, identify particular sequences of events that occur near each
