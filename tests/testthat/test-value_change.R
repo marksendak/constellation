@@ -5,6 +5,9 @@ context("Detecting Value Changes")
 sbp_testpt <- vitals[VARIABLE == "SYSTOLIC_BP" & PAT_ID == "108546"]
 sbp_testpt[, VALUE := round(VALUE, digits = 4)]
 
+sbp_testpt <- sbp_testpt[, RECORDED_TIME :=
+                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+
 ## Tests
 test_that("value change produces expected values for test patient", {
   ####### First drop
@@ -115,4 +118,18 @@ test_that("error messages function", {
     window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME",
     value_var = "foo", mult = "all"),
     "'value_var' is not a column name in data")
+
+  ## Time variable in events data frame not POSIXct
+  sbp_testpt[, RECORDED_TIME := as.Date(RECORDED_TIME)]
+  expect_error(
+    value_change(sbp_testpt, value = 40, direction = "all",
+      window_hours = 6, join_key = "PAT_ID", time_var = "RECORDED_TIME",
+      value_var = "VALUE", mult = "all"),
+    "'time_var' column must be POSIXct class"
+  )
+  sbp_testpt <- vitals[VARIABLE == "SYSTOLIC_BP" & PAT_ID == "108546"]
+  sbp_testpt[, VALUE := round(VALUE, digits = 4)]
+
+  sbp_testpt <- sbp_testpt[, RECORDED_TIME :=
+    fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 })

@@ -23,8 +23,8 @@ for the value change}
 \item{join_key}{A string name of the column to join the time series data
 frame to itself. In other words, the primary key to the 'data' argument.}
 
-\item{time_var}{A string name of the time stamp column in the time series
-data frame}
+\item{time_var}{A string name of the time stamp column in all time series
+data frames. The class of time_var must be POSIXct in all data frames.}
 
 \item{value_var}{A string name of the value variable column in the time
 series data frame}
@@ -42,8 +42,9 @@ A function that reads in a time series data frame along with a specified
 The user must specify the number of hours over which the value change must
  take place, the magnitude and direction of the value change, a variable to
  use to join the table to itself, the time stamp variable, and the value
- variable. The user must also specify whether to keep all instances that
- the value change occurs, or only the first or last instance.
+ variable. The timestamps variable in every data frame must be POSIXct 
+ class. The user must also specify whether to keep all instances that the
+ value change occurs, or only the first or last instance.
 This function must be used carefully, because certain types of arguments
  will cause the function to output a data frame with nrow(data)^2, where
  'data' is the input data. More specifically, if the user is trying to
@@ -52,8 +53,7 @@ This function must be used carefully, because certain types of arguments
 }
 \section{Imported functions}{
 
-fastPOSIXct() from fasttime package, foverlaps() from data.table and
- general data.table syntax
+foverlaps() from data.table and general data.table syntax
 }
 
 \section{Errors}{
@@ -71,7 +71,10 @@ This function returns errors for:
 
 \examples{
 library(data.table)
+library(fasttime)
 systolic_bp <- as.data.table(vitals[VARIABLE == "SYSTOLIC_BP"])
+
+systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
 
 # Identify all instances of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,

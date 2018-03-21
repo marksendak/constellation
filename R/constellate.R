@@ -103,7 +103,7 @@ constellate <- function(..., window_hours, join_key, time_var, event_name,
     stop("'event_name' must be a character string")
   }
 
-  # window_hours must be numeric and greater than 0
+  # window_hours must be numeric
   for (i in window_hours) {
     if (!is.numeric(i)) stop(" All window_hours must be numeric")
   }
