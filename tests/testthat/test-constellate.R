@@ -1,26 +1,29 @@
 library(constellation)
 context("Constellate")
 
+## Set timezone
+Sys.setenv(TZ = "UTC")
+
 ## Build test patient
 crea_testpt <- labs[VARIABLE == "CREATININE" & PAT_ID == "108546"]
 plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 
 ## Set time variables to POSIXct
-crea_testpt <- crea_testpt[, RECORDED_TIME :=
-                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-plts_testpt <- plts_testpt[, RECORDED_TIME :=
-                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+crea_testpt <- crea_testpt[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+    format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")]
+plts_testpt <- plts_testpt[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+    format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")]
 
 ## Tests
 test_that("constellate produces expected values for test patient", {
   ####### all events
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, TEST_TIME =
-                     fastPOSIXct("2010-02-28 22:49:15", tz = "UTC")),
+                     as.POSIXct("2010-02-28 22:49:15", tz = "UTC")),
       data.table(PAT_ID = 108546, TEST_TIME =
-                     fastPOSIXct("2010-03-01 08:57:15", tz = "UTC")),
+                     as.POSIXct("2010-03-01 08:57:15", tz = "UTC")),
       data.table(PAT_ID = 108546, TEST_TIME =
-                     fastPOSIXct("2010-03-02 08:50:45", tz = "UTC"))
+                     as.POSIXct("2010-03-02 08:50:45", tz = "UTC"))
   )
   setkeyv(crea_plts, c("PAT_ID", "TEST_TIME"))
 
@@ -31,7 +34,7 @@ test_that("constellate produces expected values for test patient", {
 
   ####### first event per patient
   crea_plts <- data.table(PAT_ID = 108546,
-    TEST_TIME = fastPOSIXct("2010-02-28 22:49:15", tz = "UTC"))
+    TEST_TIME = as.POSIXct("2010-02-28 22:49:15", tz = "UTC"))
   setkey(crea_plts, "PAT_ID")
 
   ## Test
@@ -41,7 +44,7 @@ test_that("constellate produces expected values for test patient", {
 
   ####### last event per patient
   crea_plts <- data.table(PAT_ID = 108546,
-    TEST_TIME = fastPOSIXct("2010-06-29 15:28:15", tz = "UTC"))
+    TEST_TIME = as.POSIXct("2010-06-29 15:28:15", tz = "UTC"))
   setkey(crea_plts, "PAT_ID")
 
   ## Test
@@ -56,11 +59,11 @@ test_that("constellate produces expected values for test patient", {
 test_that("event name assigns properly", {
   crea_plts <- rbind(
     data.table(PAT_ID = 108546, BLAH_TIME =
-                 fastPOSIXct("2010-02-28 22:49:15", tz = "UTC")),
+                 as.POSIXct("2010-02-28 22:49:15", tz = "UTC")),
     data.table(PAT_ID = 108546, BLAH_TIME =
-                 fastPOSIXct("2010-03-01 08:57:15", tz = "UTC")),
+                 as.POSIXct("2010-03-01 08:57:15", tz = "UTC")),
     data.table(PAT_ID = 108546, BLAH_TIME =
-                 fastPOSIXct("2010-03-02 08:50:45", tz = "UTC"))
+                 as.POSIXct("2010-03-02 08:50:45", tz = "UTC"))
   )
   setkeyv(crea_plts, c("PAT_ID", "BLAH_TIME"))
 
@@ -197,5 +200,5 @@ test_that("error messages function", {
   )
   crea_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
   crea_testpt <- crea_testpt[, RECORDED_TIME :=
-                                 fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+                                 as.POSIXct(RECORDED_TIME, tz = "UTC")]
 })

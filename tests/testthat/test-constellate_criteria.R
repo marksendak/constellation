@@ -1,28 +1,31 @@
 library(constellation)
 context("Constellate and Show Criteria")
 
+## Set timezone
+Sys.setenv(TZ = "UTC")
+
 ## Build test patient
 crea_testpt <- labs[VARIABLE == "CREATININE" & PAT_ID == "108546"]
 plts_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
 
 ## Set time variables to POSIXct
-crea_testpt <- crea_testpt[, RECORDED_TIME :=
-                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-plts_testpt <- plts_testpt[, RECORDED_TIME :=
-                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+crea_testpt <- crea_testpt[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")]
+plts_testpt <- plts_testpt[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")]
 
 ## Tests
 test_that("constellate criteria produces expected values for test patient", {
   ####### test lab orders with boolean value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"), CREATININE = 0,
+        as.POSIXct("2010-02-25 10:27:44", tz = "UTC"), CREATININE = 0,
         PLATELETS = 1),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"), CREATININE = 1,
+        as.POSIXct("2010-02-26 01:48:18", tz = "UTC"), CREATININE = 1,
         PLATELETS = 0),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"), CREATININE = 0,
+        as.POSIXct("2010-02-26 14:36:46", tz = "UTC"), CREATININE = 0,
         PLATELETS = 1)
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
@@ -31,22 +34,22 @@ test_that("constellate criteria produces expected values for test patient", {
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "boolean"),
-    n = 3), crea_plts)
+    n = 3), crea_plts, check.attributes = FALSE)
 
   ####### test lab orders with time value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
-        CREATININE = fastPOSIXct(NA, tz = "UTC"),
-        PLATELETS = fastPOSIXct("2010-02-25 10:27:44", tz = "UTC")),
+        as.POSIXct("2010-02-25 10:27:44", tz = "UTC"),
+        CREATININE = as.POSIXct(NA, tz = "UTC"),
+        PLATELETS = as.POSIXct("2010-02-25 10:27:44", tz = "UTC")),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
-        CREATININE = fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
-        PLATELETS = fastPOSIXct(NA, tz = "UTC")),
+        as.POSIXct("2010-02-26 01:48:18", tz = "UTC"),
+        CREATININE = as.POSIXct("2010-02-26 01:48:18", tz = "UTC"),
+        PLATELETS = as.POSIXct(NA, tz = "UTC")),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"),
-        CREATININE = fastPOSIXct(NA, tz = "UTC"),
-        PLATELETS = fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"))
+        as.POSIXct("2010-02-26 14:36:46", tz = "UTC"),
+        CREATININE = as.POSIXct(NA, tz = "UTC"),
+        PLATELETS = as.POSIXct("2010-02-26 14:36:46", tz = "UTC"))
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
 
@@ -54,7 +57,7 @@ test_that("constellate criteria produces expected values for test patient", {
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "time"),
-    n = 3), crea_plts)
+    n = 3), crea_plts, check.attributes = FALSE)
 
   ## Remove objects
   rm(crea_plts)
@@ -62,13 +65,13 @@ test_that("constellate criteria produces expected values for test patient", {
   ####### test lab orders with result value
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"),
+        as.POSIXct("2010-02-25 10:27:44", tz = "UTC"),
         CREATININE = NA, PLATELETS = 186.91296),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"),
+        as.POSIXct("2010-02-26 01:48:18", tz = "UTC"),
         CREATININE = 0.7804720, PLATELETS = NA),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"),
+        as.POSIXct("2010-02-26 14:36:46", tz = "UTC"),
         CREATININE = NA, PLATELETS = 181.77154)
       )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
@@ -77,7 +80,8 @@ test_that("constellate criteria produces expected values for test patient", {
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("CREATININE", "PLATELETS"), window_hours = 2,
     join_key = "PAT_ID", time_var = "RECORDED_TIME", value = "result",
-    result_var = "VALUE"), n = 3), crea_plts, tolerance = 1e-5)
+    result_var = "VALUE"), n = 3), crea_plts, tolerance = 1e-5,
+    check.attributes = FALSE)
 
   ## Remove objects
   rm(crea_plts)
@@ -87,18 +91,19 @@ test_that("criteria names assign properly", {
   ####### test lab orders without final event
   crea_plts <- rbind(
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-25 10:27:44", tz = "UTC"), LAB_1 = 0, LAB_2 = 1),
+        as.POSIXct("2010-02-25 10:27:44", tz = "UTC"), LAB_1 = 0, LAB_2 = 1),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 01:48:18", tz = "UTC"), LAB_1 = 1, LAB_2 = 0),
+        as.POSIXct("2010-02-26 01:48:18", tz = "UTC"), LAB_1 = 1, LAB_2 = 0),
       data.table(PAT_ID = 108546, RECORDED_TIME =
-        fastPOSIXct("2010-02-26 14:36:46", tz = "UTC"), LAB_1 = 0, LAB_2 = 1)
+        as.POSIXct("2010-02-26 14:36:46", tz = "UTC"), LAB_1 = 0, LAB_2 = 1)
   )
   crea_plts <- setkeyv(crea_plts, c("PAT_ID", "RECORDED_TIME"))
 
   ## Test
   expect_equal(head(constellate_criteria(crea_testpt, plts_testpt,
     criteria_names = c("LAB_1", "LAB_2"), window_hours = 2,
-    join_key = "PAT_ID", time_var = "RECORDED_TIME"), n = 3), crea_plts)
+    join_key = "PAT_ID", time_var = "RECORDED_TIME"), n = 3), crea_plts,
+    check.attributes = FALSE)
 
   ## Remove objects
   rm(crea_plts)
@@ -248,7 +253,7 @@ test_that("error messages function", {
   )
   crea_testpt <- labs[VARIABLE == "PLATELETS" & PAT_ID == "108546"]
   crea_testpt <- crea_testpt[, RECORDED_TIME :=
-                                 fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+                                 as.POSIXct(RECORDED_TIME, tz = "UTC")]
 
   ## Same number of criteria names as data frames
   expect_error(

@@ -1,20 +1,23 @@
 library(constellation)
 context("Detecting Value Changes")
 
+## Set timezone
+Sys.setenv(TZ = "UTC")
+
 ## Build test patient
 sbp_testpt <- vitals[VARIABLE == "SYSTOLIC_BP" & PAT_ID == "108546"]
 sbp_testpt[, VALUE := round(VALUE, digits = 4)]
 
-sbp_testpt <- sbp_testpt[, RECORDED_TIME :=
-                               fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+sbp_testpt <- sbp_testpt[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+    format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")]
 
 ## Tests
 test_that("value change produces expected values for test patient", {
   ####### First drop
   ## First drop
   first_drop <- data.table(PAT_ID = 108546, PRIOR_RECORDED_TIME =
-    fastPOSIXct("2010-02-25 15:45:29", tz = "UTC"), PRIOR_VALUE = 139.9967,
-    CURRENT_RECORDED_TIME = fastPOSIXct("2010-02-25 20:42:35", tz = "UTC"),
+    as.POSIXct("2010-02-25 15:45:29", tz = "UTC"), PRIOR_VALUE = 139.9967,
+    CURRENT_RECORDED_TIME = as.POSIXct("2010-02-25 20:42:35", tz = "UTC"),
     CURRENT_VALUE = 80.0745)
   first_drop <- setkey(first_drop, "PAT_ID")
 
@@ -26,8 +29,8 @@ test_that("value change produces expected values for test patient", {
   ####### Last drop
   ## Last drop
   last_drop <- data.table(PAT_ID = 108546, PRIOR_RECORDED_TIME =
-    fastPOSIXct("2010-07-01 15:31:31", tz = "UTC"), PRIOR_VALUE = 164.9851,
-    CURRENT_RECORDED_TIME = fastPOSIXct("2010-07-01 21:03:04", tz = "UTC"),
+    as.POSIXct("2010-07-01 15:31:31", tz = "UTC"), PRIOR_VALUE = 164.9851,
+    CURRENT_RECORDED_TIME = as.POSIXct("2010-07-01 21:03:04", tz = "UTC"),
     CURRENT_VALUE = 114.6797)
   last_drop <- setkey(last_drop, "PAT_ID")
 
@@ -131,5 +134,5 @@ test_that("error messages function", {
   sbp_testpt[, VALUE := round(VALUE, digits = 4)]
 
   sbp_testpt <- sbp_testpt[, RECORDED_TIME :=
-    fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+    as.POSIXct(RECORDED_TIME, tz = "UTC")]
 })
