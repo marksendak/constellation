@@ -50,14 +50,13 @@ First, load constellation and fasttime
 ```{r setup, message = FALSE}
 library(constellation)
 library(data.table)
-library(fasttime)
 ```
 
 Next, prep the timestamps
 ```{r timestamps, message = FALSE}
 for (dt in list(vitals, labs, orders)) {
     date_col <- grep("TIME", names(dt), value = TRUE)
-    set(dt, j = date_col, value = fastPOSIXct(dt[[date_col]], tz = "UTC"))
+    set(dt, j = date_col, value = as.POSIXct(dt[[date_col]], format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"))
 }
 ```
 

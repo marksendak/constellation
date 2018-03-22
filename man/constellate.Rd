@@ -63,15 +63,18 @@ This function returns errors for:
 
 \examples{
 library(data.table)
-library(fasttime)
 temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
 wbc <- as.data.table(labs[VARIABLE == "WBC"])
-temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-wbc[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+temp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
+pulse[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
+resp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
+wbc[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
 
 # Pass single time window for all time series data frames
 # Subset first event

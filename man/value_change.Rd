@@ -71,10 +71,10 @@ This function returns errors for:
 
 \examples{
 library(data.table)
-library(fasttime)
 systolic_bp <- as.data.table(vitals[VARIABLE == "SYSTOLIC_BP"])
 
-systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+systolic_bp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
 
 # Identify all instances of a drop of 40 over 6 hours
 value_change(systolic_bp, value = 40, direction = "down", window_hours = 6,

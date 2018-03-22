@@ -87,10 +87,9 @@ Examine systolic blood pressure data:
 
 ``` r
 library(constellation)
-library(fasttime)
 
 systolic_bp <- vitals[VARIABLE == "SYSTOLIC_BP"]
-systolic_bp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+systolic_bp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")]
 head(systolic_bp)
 #>    PAT_ID       RECORDED_TIME    VALUE    VARIABLE
 #> 1: 108546 2010-02-25 05:36:15 110.6677 SYSTOLIC_BP

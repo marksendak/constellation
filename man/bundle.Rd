@@ -88,14 +88,16 @@ This function returns errors for:
 
 \examples{
 library(data.table)
-library(fasttime)
 temp <- as.data.table(vitals[VARIABLE == "TEMPERATURE"])
 pulse <- as.data.table(vitals[VARIABLE == "PULSE"])
 resp <- as.data.table(vitals[VARIABLE == "RESPIRATORY_RATE"])
 
-temp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-pulse[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
-resp[, RECORDED_TIME := fastPOSIXct(RECORDED_TIME, tz = "UTC")]
+temp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
+pulse[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
+resp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
+  format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
 
 # Pass single window_hours_pre
 # All instances of bundle items within time window of event
