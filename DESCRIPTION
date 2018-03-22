@@ -4,7 +4,7 @@ Title: Identify Event Sequences Using Time Series Joins
 Version: 0.1.0
 Date: 2017-10-30
 Depends: R (>= 3.0.0)
-Imports: data.table (>= 1.9.5), fasttime (>= 1.0-2)
+Imports: data.table (>= 1.9.5)
 Suggests: knitr, rmarkdown, ggplot2, devtools,
     testthat
 Authors@R: person("Mark", "Sendak", email = "mark.sendak@gmail.com",
