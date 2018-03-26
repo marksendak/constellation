@@ -22,16 +22,17 @@ knitr::opts_chunk$set(
 
 Constellation contains a set of functions for applying multidimensional, time window based logic to time series data frames of arbitrary length. Constellation was developed to enable rapid and flexible identification of series of events that occur in hospitalized patients. The functions have been abstracted for general purpose use with time series data. Constellation extends and provides a friendly API to rolling joins and overlap joins implemented in [data.table](https://CRAN.R-project.org/package=data.table). Three datasets (labs, vitals, and orders) with randomly synthesized time series data for a cohort of 100 patients are included to facilitate testing of functions.
 
-There are four functions included in constellation to build complex features from time series data:
+There are five functions included in constellation to build complex features from time series data:
 
 * `value_change()` identify increases or decreases in a value within a given time window
 * `constellate()` identify time stamps when a series of events occurs within a given time window
 * `constellate_criteria()` identify which events occur within a given time window for every measurement time stamp
 * `bundle()` identify which events occur within a given time window of a given event
+* `incidents()` identify distinct, incident episodes that must be separated in time by a minimum of a given time window
 
 The `constellate_criteria()` and `bundle()` function are similar, but the `bundle()` function is anchored around a specific event table. The `bundle()` function identifies events that occur within a given time window of a **specific** event data frame that is supplied to the function. On the other hand, the `constellate_criteria()` function identifies events that occur within a given time window of **any** event data frame that is supplied to the function. The first data frame passed to the `bundle()` function is used as an anchor to search through the subsequent data frames passed to the function. The order of data frames is significant and passing different data frames as the first argument will generate different results. On the other hand, the order in which you pass data frames to the `constellate_criteria()` function is insignificant. Passing data frames in different orders will generate equivalent results.
 
-Constellation can be used to build point-based scores for time series data, identify particular sequences of events that occur near each other, identify when specific changes occur for a given parameter, and identify individual events that occur around a specified time stamp.
+Constellation can be used to build point-based scores for time series data (via `constellate_criteria()`), identify particular sequences of events that occur near each other (via `constellate()`), identify when specific changes occur for a given parameter (via `value_change()`), identify individual events that occur around a specified time stamp (via `bundle()`), and distinguish between eveents that are separated by a specified time window (via `incidents()`).
 
 If you are new to constellation, the best place to start is the `vignette("constellation", "identify_sepsis")`. You can also view the sepsis vignette on [CRAN](https://cran.r-project.org/package=constellation/vignettes/identify_sepsis.html).
 

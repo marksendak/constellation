@@ -22,7 +22,7 @@ datasets (labs, vitals, and orders) with randomly synthesized time
 series data for a cohort of 100 patients are included to facilitate
 testing of functions.
 
-There are four functions included in constellation to build complex
+There are five functions included in constellation to build complex
 features from time series data:
 
   - `value_change()` identify increases or decreases in a value within a
@@ -33,6 +33,8 @@ features from time series data:
     time window for every measurement time stamp
   - `bundle()` identify which events occur within a given time window of
     a given event
+  - `incidents()` identify distinct, incident episodes that must be
+    separated in time by a minimum of a given time window
 
 The `constellate_criteria()` and `bundle()` function are similar, but
 the `bundle()` function is anchored around a specific event table. The
@@ -50,9 +52,12 @@ insignificant. Passing data frames in different orders will generate
 equivalent results.
 
 Constellation can be used to build point-based scores for time series
-data, identify particular sequences of events that occur near each
-other, identify when specific changes occur for a given parameter, and
-identify individual events that occur around a specified time stamp.
+data (via `constellate_criteria()`), identify particular sequences of
+events that occur near each other (via `constellate()`), identify when
+specific changes occur for a given parameter (via `value_change()`),
+identify individual events that occur around a specified time stamp (via
+`bundle()`), and distinguish between eveents that are separated by a
+specified time window (via `incidents()`).
 
 If you are new to constellation, the best place to start is the
 `vignette("constellation", "identify_sepsis")`. You can also view the

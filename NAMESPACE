@@ -2,5 +2,6 @@ export("constellate")
 export("constellate_criteria")
 export("value_change")
 export("bundle")
+export("incidents")
 
 import("data.table")

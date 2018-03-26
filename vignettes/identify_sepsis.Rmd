@@ -36,6 +36,8 @@ There are 3 steps to identify sepsis and each step corresponds to a constellatio
 2. Identify instances of SIRS >= 2 (**constellate_criteria()** function)
 3. Identify instances in which patients have SIRS >= 2, a blood culture order, and evidence of end organ damage (**constellate()** function)
 
+Lastly, it may be required to separate distinct sepsis episodes during a single inpatient admission. For example, you may consider that sepsis events separated by more than 72 hours are distinct episodes that require additional evaluation and treatment. Thus, instances within 72 hours of an incident event are considered to be the same episode and instances separated by a minimum of 72 hours are considered to be distinct episodes. This logic is implemented via the **incidents()** function. 
+
 ## View Vignette with Output
 
 The .Rmd version of the vignette will not show code output. If you'd like to see code output, please do the following:
@@ -135,15 +137,6 @@ setnames(orders, "ORDER_TIME", "RECORDED_TIME")
 
 #### Run constellate()
 
-Calculate every instance in which all 3 criteria are met for every patient.
-```{r sepsis_def_all, message = FALSE}
-## Find all sepsis events
-sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
-    join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
-    mult = "all")
-head(sepsis)
-```
-
 Calculate the first instant in which all 3 criteria are met for every patient.
 ```{r sepsis_def_first, message = FALSE}
 ## Find first sepsis events
@@ -159,6 +152,23 @@ Calculate the last instant in which all 3 criteria are met for every patient.
 sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
     join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
     mult = "last")
+head(sepsis)
+```
+
+Calculate every instance in which all 3 criteria are met for every patient.
+```{r sepsis_def_all, message = FALSE}
+## Find all sepsis events
+sepsis <- constellate(sirs, orders, end_organ, window_hours = c(24, 24, 24),
+    join_key = "PAT_ID", time_var = "RECORDED_TIME", event_name = "SEPSIS",
+    mult = "all")
+head(sepsis)
+```
+
+## Separate incident sepsis events for every patient
+Separate sepsis events that occur more than 72 hours apart for each patient.
+```{r sepsis_incidents, message = FALSE}
+## Find incident sepsis events for each patient
+sepsis <- incidents(sepsis, window_hours = 72, time_var = "SEPSIS_TIME", join_key = "PAT_ID")
 head(sepsis)
 ```
 
