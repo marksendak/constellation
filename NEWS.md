@@ -1,10 +1,13 @@
 Development Version
 ===================
 
+## NEW FEATURES
+* New `incidents()` function to separate distinct illness episodes into incident events
+
 ## CHANGES
 
 * Fixed window_hours for blood pressure drop in sepsis definition
-* Changed timezone conversion from GMT to UTC
+* Removed fasttime dependency. Constellation functions no longer do any date time conversions and will throw errors if timestamp variables aren't passed to functions as POSIXct class.
 
 Version 0.1.0
 =============
