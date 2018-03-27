@@ -1,4 +1,4 @@
-Development Version
+Version 0.2.0
 ===================
 
 ## NEW FEATURES
