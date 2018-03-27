@@ -174,4 +174,4 @@ head(sepsis)
 
 ## Technical References
 
-If you'd like to learn more about our sepsis model, please see our publications from the [International Conerence on Machine Learning](https://arxiv.org/abs/1706.04152) and [Machine Learning in Health Care](https://arxiv.org/pdf/1708.05894.pdf). 
+If you'd like to learn more about our sepsis model, please see our publications from the [International Conerence on Machine Learning](http://proceedings.mlr.press/v70/futoma17a/futoma17a.pdf) and [Machine Learning in Health Care](http://mucmd.org/CameraReadySubmissions/53%5CCameraReadySubmission%5CCR.pdf). 

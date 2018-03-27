@@ -10,7 +10,7 @@ incidents(data, window_hours, time_var, join_key = NULL)
 \item{data}{A time series data frame that includes the columns 'join_key'
 and 'time_var'}
 
-\item{window_hours}{A numeric value specifying the number of hours to 
+\item{window_hours}{A numeric value specifying the number of hours to
 separate contiguous episodes and distinct episodes}
 
 \item{time_var}{A string name of the time stamp column in the time series
@@ -28,14 +28,14 @@ A function that reads in a time series data frame along with a specified
 The user must specify the number of hours over which events are considered
  to be the same episode, the time stamp variable, and an optional variable
  to group episodes. This function was motivated by examples where there may
- be multiple observations of the same illness episode combined with 
+ be multiple observations of the same illness episode combined with
  observations of distinct illness episodes and there is a need to
  distinguish between episodes. This function assumes that the duration of
  an episode is non-zero. If every non-equal instant is a distinct episode,
  there is no need to use this function.
 Two ways to distinguish between episodes with non-zero duration over time
  are: (1) bucket observations over a pre-fixed time frame that is applied to
- all observation; (2) bucket observations over a fixed window of time. An 
+ all observation; (2) bucket observations over a fixed window of time. An
  example of (1) is considering observations in the same month to be the same
  episode and observations in different months to be distinct episodes. The
  incident() function addresses (2) by specifying a time window and
@@ -69,12 +69,12 @@ systolic_bp[, RECORDED_TIME := as.POSIXct(RECORDED_TIME,
   format = "\%Y-\%m-\%dT\%H:\%M:\%SZ", tz = "UTC")]
 
 # Identify systolic blood pressure measurements for each patient that are
- # separated by at least 4 hours
-incidents(systolic_bp, window_hours = 4, join_key = "PAT_ID",
+ # separated by at least 24 hours
+incidents(systolic_bp, window_hours = 24, join_key = "PAT_ID",
  time_var = "RECORDED_TIME")
 
 # Identify systolic blood pressure measurements that are separated by at
- # least 4 hours
-incidents(systolic_bp, window_hours = 4, time_var = "RECORDED_TIME")
+ # least 24 hours
+incidents(systolic_bp, window_hours = 24, time_var = "RECORDED_TIME")
 
 }
