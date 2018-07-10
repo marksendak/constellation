@@ -110,7 +110,6 @@ incidents <- function(data, window_hours, time_var, join_key = NULL) {
   # Loop through events until gone through all events
   while(nrow(data) > 0) {
     # Empty placeholders for new variables
-    V1 = NULL
     KEEP = NULL
 
     # Drop events solely by timestamp
