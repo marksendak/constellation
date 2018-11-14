@@ -1,3 +1,10 @@
+Development Version
+===================
+
+## Changes
+
+* Remove (with = FALSE) from functions
+
 Version 0.2.0
 ===================
 
