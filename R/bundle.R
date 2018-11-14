@@ -218,7 +218,7 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
   for (i in seq_len(length(bundle_list))) {
     # Subset data frames
     bundle_list[[i]] <- data.table(
-      bundle_list[[i]][, c(join_key, time_var)]
+      bundle_list[[i]][, c(join_key, time_var), with = FALSE]
     )
     
     # Create bundle variable
@@ -230,7 +230,7 @@ bundle <- function(events, ..., bundle_names, window_hours_pre,
 
   ## event data frame
   # Subset data frame
-  events <- data.table(events[, c(join_key, time_var)])
+  events <- data.table(events[, c(join_key, time_var), with = FALSE])
 
   # Change name
   setnames(events, time_var, event_name)
